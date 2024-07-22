@@ -25,6 +25,8 @@ public class UserService {
         String phoneNum = registerDTO.getPhoneNum();
         String emergencyNum = registerDTO.getEmergencyNum();
         String address = registerDTO.getAddress();
+        String nickname = registerDTO.getNickname();
+        boolean open = registerDTO.getOpen();
 
         Boolean isExist = userRepository.existsByUsername(username);
 
@@ -39,6 +41,8 @@ public class UserService {
                 .emergencyNum(emergencyNum)
                 .address(address)
                 .role("USER")
+                .nickname(nickname)
+                .open(open)
                 .build();
 
         userRepository.save(user);
