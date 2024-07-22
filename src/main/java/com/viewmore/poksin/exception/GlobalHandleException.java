@@ -3,6 +3,7 @@ package com.viewmore.poksin.exception;
 import com.viewmore.poksin.code.ErrorCode;
 import com.viewmore.poksin.response.ErrorResponseDTO;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -13,5 +14,12 @@ public class GlobalHandleException {
         return ResponseEntity
                 .status(ErrorCode.DUPLICATE_USERNAME.getStatus().value())
                 .body(new ErrorResponseDTO(ErrorCode.DUPLICATE_USERNAME));
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    protected ResponseEntity<ErrorResponseDTO> handleUsernameNotFoundException(final UsernameNotFoundException e) {
+        return ResponseEntity
+                .status(ErrorCode.USER_NOT_FOUND.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.USER_NOT_FOUND));
     }
 }
