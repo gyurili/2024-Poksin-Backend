@@ -7,6 +7,7 @@ import com.viewmore.poksin.entity.CategoryEntity;
 import com.viewmore.poksin.entity.CategoryTypeEnum;
 import com.viewmore.poksin.entity.EvidenceEntity;
 import com.viewmore.poksin.entity.UserEntity;
+import com.viewmore.poksin.repository.CategoryRepository;
 import com.viewmore.poksin.repository.EvidenceRepository;
 import com.viewmore.poksin.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import java.util.List;
 public class EvidenceService {
     private final EvidenceRepository evidenceRepository;
     private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
     private final S3Uploader s3Uploader;
 
     public EvidenceResponseDTO updateFile(String username, CreateEvidenceDTO createEvidenceDTO, List<MultipartFile> fileUrls) throws IOException {
@@ -36,10 +38,15 @@ public class EvidenceService {
             getUrls.add(s3Uploader.upload(file, type.toString().toLowerCase()));
         }
 
+        CategoryEntity category = categoryRepository.findByName(type)
+                .orElseThrow(() -> new UsernameNotFoundException("해당 사용자 이름을 가진 사용자를 찾을 수 없습니다: " + username));
+
+
         EvidenceEntity evidenceEntity = EvidenceEntity.builder()
                 .user(user)
                 .title(createEvidenceDTO.getTitle())
                 .description(createEvidenceDTO.getDescription())
+                .category(category)
                 .build();
 
         evidenceEntity.setFileUrls(getUrls);

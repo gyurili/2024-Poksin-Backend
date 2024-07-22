@@ -1,6 +1,7 @@
 package com.viewmore.poksin.dto.evidence;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.viewmore.poksin.entity.CategoryTypeEnum;
 import com.viewmore.poksin.entity.EvidenceEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,6 +18,8 @@ import java.util.List;
 public class EvidenceResponseDTO {
     // id
     private int id;
+    // 카테고리
+    private CategoryTypeEnum category;
     // 자료 제목
     private String title;
     // 자료 상세 설명
@@ -29,6 +32,7 @@ public class EvidenceResponseDTO {
     public static EvidenceResponseDTO toDto(EvidenceEntity entity) throws JsonProcessingException {
         return builder()
                 .id(entity.getId())
+                .category(entity.getCategory().getName())
                 .title(entity.getTitle())
                 .description(entity.getDescription())
                 .fileUrls(entity.getFileUrls())
