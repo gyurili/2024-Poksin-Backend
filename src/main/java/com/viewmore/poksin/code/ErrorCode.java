@@ -24,6 +24,8 @@ public enum ErrorCode {
      * 404
      */
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
+    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "카테고리를 찾을 수 없습니다."),
+    EVIDENCE_NOT_FOUND(HttpStatus.NOT_FOUND, "증거를 찾을 수 없습니다."),
 
     /**
      * 409
