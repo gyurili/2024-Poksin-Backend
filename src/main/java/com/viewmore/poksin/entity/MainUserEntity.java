@@ -2,6 +2,7 @@ package com.viewmore.poksin.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class MainUserEntity extends BaseEntity{
+public class MainUserEntity extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -18,9 +19,13 @@ public abstract class MainUserEntity extends BaseEntity{
     private String username;
     // 비밀번호
     private String password;
+    // admin 계정인가?
+    private String role;
 
-    public MainUserEntity(String username, String password) {
+    @Builder(builderMethodName = "signupBuilder")
+    public MainUserEntity(String username, String password, String role) {
         this.username = username;
         this.password = password;
+        this.role = role;
     }
 }

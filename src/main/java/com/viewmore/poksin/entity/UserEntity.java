@@ -25,25 +25,16 @@ public class UserEntity extends MainUserEntity{
     private boolean emergencyOpen;
     // 주소 공개 비공개 여부
     private boolean addressOpen;
-    // admin 계정인가?
-    private String role;
 
     @Builder(builderMethodName = "userEntityBuilder")
     public UserEntity(String username, String password, String phoneNum, String emergencyNum, String address, boolean phoneOpen, boolean emergencyOpen, boolean addressOpen, String role) {
-        super(username, password);
+        super(username, password, role);
         this.phoneNum = phoneNum;
         this.emergencyNum = emergencyNum;
         this.address = address;
         this.phoneOpen = phoneOpen;
         this.emergencyOpen = emergencyOpen;
         this.addressOpen = addressOpen;
-        this.role = role;
-    }
-
-    @Builder(builderMethodName = "signupBuilder")
-    public UserEntity(String username, String password, String role) {
-        super(username, password);
-        this.role = role;
     }
 
     public boolean getphoneOpen() {
