@@ -22,11 +22,6 @@ public class UserService {
 
         String username = registerDTO.getUsername();
         String password = registerDTO.getPassword();
-        String phoneNum = registerDTO.getPhoneNum();
-        String emergencyNum = registerDTO.getEmergencyNum();
-        String address = registerDTO.getAddress();
-
-        boolean open = registerDTO.getOpen();
 
         Boolean isExist = userRepository.existsByUsername(username);
 
@@ -37,11 +32,13 @@ public class UserService {
         UserEntity user = UserEntity.builder()
                 .username(username)
                 .password(bCryptPasswordEncoder.encode(password))
-                .phoneNum(phoneNum)
-                .emergencyNum(emergencyNum)
-                .address(address)
+                .phoneNum(registerDTO.getPhoneNum())
+                .emergencyNum(registerDTO.getEmergencyNum())
+                .address(registerDTO.getAddress())
+                .phoneOpen(registerDTO.getphoneOpen())
+                .emergencyOpen(registerDTO.getEmergencyOpen())
+                .addressOpen(registerDTO.addressOpen())
                 .role("USER")
-                .open(open)
                 .build();
 
         userRepository.save(user);
