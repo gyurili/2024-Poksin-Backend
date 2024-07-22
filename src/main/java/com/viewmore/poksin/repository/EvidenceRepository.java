@@ -6,8 +6,10 @@ import com.viewmore.poksin.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface EvidenceRepository extends JpaRepository<EvidenceEntity, Integer> {
     List<EvidenceEntity> findAllByUser(UserEntity user);
     List<EvidenceEntity> findAllByUserAndCategory(UserEntity user, CategoryEntity category);
+    Optional<EvidenceEntity> findById(Integer id);
 }

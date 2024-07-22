@@ -92,4 +92,11 @@ public class EvidenceService {
 
         return evidenceResponseDTOS;
     }
+
+    public void deleteEvidence(Integer id) {
+        EvidenceEntity evidence = evidenceRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("해당 카테고리 이름을 찾을 수 없습니다."));
+
+        evidenceRepository.delete(evidence);
+    }
 }

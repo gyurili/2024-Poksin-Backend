@@ -64,4 +64,15 @@ public class EvidenceController {
                 .body(new ResponseDTO<>(SuccessCode.SUCCESS_RETRIEVE_EVIDENCE, response));
 
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ResponseDTO> deleteEvidence(
+            @PathVariable("id") Integer id
+    ) {
+        evidenceService.deleteEvidence(id);
+        return ResponseEntity
+                .status(SuccessCode.SUCCESS_DELETE_EVIDENCE.getStatus().value())
+                .body(new ResponseDTO<>(SuccessCode.SUCCESS_DELETE_EVIDENCE, null));
+
+    }
 }

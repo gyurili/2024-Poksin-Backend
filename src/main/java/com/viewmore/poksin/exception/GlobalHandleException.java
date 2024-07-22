@@ -29,4 +29,11 @@ public class GlobalHandleException {
                 .status(ErrorCode.CATEGORY_NOT_FOUND.getStatus().value())
                 .body(new ErrorResponseDTO(ErrorCode.CATEGORY_NOT_FOUND));
     }
+
+    @ExceptionHandler(EvidenceNotFoundException.class)
+    protected ResponseEntity<ErrorResponseDTO> handleEvidenceNotFoundException(final EvidenceNotFoundException e) {
+        return ResponseEntity
+                .status(ErrorCode.EVIDENCE_NOT_FOUND.getStatus().value())
+                .body(new ErrorResponseDTO(ErrorCode.EVIDENCE_NOT_FOUND));
+    }
 }
