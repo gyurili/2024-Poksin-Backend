@@ -7,6 +7,8 @@ import com.viewmore.poksin.entity.CategoryEntity;
 import com.viewmore.poksin.entity.CategoryTypeEnum;
 import com.viewmore.poksin.entity.EvidenceEntity;
 import com.viewmore.poksin.entity.UserEntity;
+import com.viewmore.poksin.exception.CategoryNotFoundException;
+import com.viewmore.poksin.exception.EvidenceNotFoundException;
 import com.viewmore.poksin.repository.CategoryRepository;
 import com.viewmore.poksin.repository.EvidenceRepository;
 import com.viewmore.poksin.repository.UserRepository;
@@ -78,7 +80,7 @@ public class EvidenceService {
                 .orElseThrow(() -> new UsernameNotFoundException("해당 사용자 이름을 가진 사용자를 찾을 수 없습니다: " + username));
 
         CategoryEntity category = categoryRepository.findByName(name)
-                .orElseThrow(() -> new UsernameNotFoundException("해당 카테고리 이름을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CategoryNotFoundException("해당 카테고리 이름을 찾을 수 없습니다."));
 
         List<EvidenceEntity> evidenceEntityList = evidenceRepository.findAllByUserAndCategory(user, category);
         List<EvidenceResponseDTO> evidenceResponseDTOS = new ArrayList<>();
@@ -93,10 +95,25 @@ public class EvidenceService {
         return evidenceResponseDTOS;
     }
 
-    public void deleteEvidence(Integer id) {
+    public void deleteEvidence(Integer id) throws JsonProcessingException {
         EvidenceEntity evidence = evidenceRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("해당 카테고리 이름을 찾을 수 없습니다."));
+                .orElseThrow(() -> new EvidenceNotFoundException("증거를 찾을 수 없습니다."));
 
         evidenceRepository.delete(evidence);
+
+        String prefix = "https://poksin.s3.ap-northeast-2.amazonaws.com/";
+
+        for (String fileUrl : evidence.getFileUrls()) {
+            String fileName = removePrefix(fileUrl, prefix);
+            System.out.println(fileName);
+            s3Uploader.deleteFile(fileName);
+        }
+    }
+
+    private String removePrefix(String url, String prefix) {
+        if (url.startsWith(prefix)) {
+            return url.replace(prefix, "");
+        }
+        return url;
     }
 }

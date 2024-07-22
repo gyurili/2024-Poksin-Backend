@@ -1,6 +1,7 @@
 package com.viewmore.poksin.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.viewmore.poksin.code.SuccessCode;
 import com.viewmore.poksin.dto.evidence.CreateEvidenceDTO;
 import com.viewmore.poksin.dto.evidence.EvidenceResponseDTO;
@@ -68,7 +69,7 @@ public class EvidenceController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<ResponseDTO> deleteEvidence(
             @PathVariable("id") Integer id
-    ) {
+    ) throws JsonProcessingException {
         evidenceService.deleteEvidence(id);
         return ResponseEntity
                 .status(SuccessCode.SUCCESS_DELETE_EVIDENCE.getStatus().value())
