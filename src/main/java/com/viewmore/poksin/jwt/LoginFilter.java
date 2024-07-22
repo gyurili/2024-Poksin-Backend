@@ -26,7 +26,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
-    private final ObjectMapper objectMapper;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -64,6 +63,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         ResponseDTO responseDTO = new ResponseDTO<>(SuccessCode.SUCCESS_LOGIN, null);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        ObjectMapper objectMapper = new ObjectMapper();
         String jsonResponse = objectMapper.writeValueAsString(responseDTO);
         response.getWriter().write(jsonResponse);
 
@@ -77,6 +77,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         ErrorResponseDTO responseDTO = new ErrorResponseDTO(ErrorCode.USER_NOT_FOUND);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        ObjectMapper objectMapper = new ObjectMapper();
         String jsonResponse = objectMapper.writeValueAsString(responseDTO);
         response.getWriter().write(jsonResponse);
     }

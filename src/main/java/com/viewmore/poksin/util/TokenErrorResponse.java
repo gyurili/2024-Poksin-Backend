@@ -4,15 +4,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viewmore.poksin.code.ErrorCode;
 import com.viewmore.poksin.response.ErrorResponseDTO;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 
+@RequiredArgsConstructor
 public class TokenErrorResponse {
+
     public static void sendErrorResponse(HttpServletResponse response, ErrorCode errorCode) throws IOException, IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
         ErrorResponseDTO errorResponse = new ErrorResponseDTO(errorCode);
+        ObjectMapper objectMapper = new ObjectMapper();
         String jsonResponse = objectMapper.writeValueAsString(errorResponse);
 
         response.setContentType("application/json");

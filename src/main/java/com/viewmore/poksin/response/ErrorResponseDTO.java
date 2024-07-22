@@ -8,8 +8,6 @@ import java.time.LocalDateTime;
 
 @Data
 public class ErrorResponseDTO {
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private final LocalDateTime timestamp = LocalDateTime.now();
     private int status;
     private String error;
     private String code;
