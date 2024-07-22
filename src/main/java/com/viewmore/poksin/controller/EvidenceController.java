@@ -39,4 +39,16 @@ public class EvidenceController {
                 .status(SuccessCode.SUCCESS_CREATE_EVIDENCE.getStatus().value())
                 .body(new ResponseDTO<>(SuccessCode.SUCCESS_CREATE_EVIDENCE, response));
     }
+
+    // 테스트를 위한 조회
+    // 추후 생성일을 기준으로 GET 요청, 전체 조회일 경우 기록 개수만 응답
+    @GetMapping("/find-all")
+    public ResponseEntity<ResponseDTO> findAllEvidence() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<EvidenceResponseDTO> response = evidenceService.findAll(username);
+        return ResponseEntity
+                .status(SuccessCode.SUCCESS_RETRIEVE_EVIDENCE.getStatus().value())
+                .body(new ResponseDTO<>(SuccessCode.SUCCESS_RETRIEVE_EVIDENCE, response));
+
+    }
 }

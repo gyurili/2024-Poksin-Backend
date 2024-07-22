@@ -1,5 +1,6 @@
 package com.viewmore.poksin.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.viewmore.poksin.dto.evidence.CreateEvidenceDTO;
 import com.viewmore.poksin.dto.evidence.EvidenceResponseDTO;
 import com.viewmore.poksin.entity.EvidenceEntity;
@@ -43,5 +44,23 @@ public class EvidenceService {
 
         evidenceRepository.save(evidenceEntity);
         return EvidenceResponseDTO.toDto(evidenceEntity);
+    }
+
+    public List<EvidenceResponseDTO> findAll(String username) {
+        UserEntity user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("해당 사용자 이름을 가진 사용자를 찾을 수 없습니다: " + username));
+
+        List<EvidenceEntity> evidenceEntityList = evidenceRepository.findAllByUser(user);
+
+        List<EvidenceResponseDTO> evidenceResponseDTOS = new ArrayList<>();
+        evidenceEntityList.forEach(entity -> {
+            try {
+                evidenceResponseDTOS.add(EvidenceResponseDTO.toDto(entity));
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        return evidenceResponseDTOS;
     }
 }
