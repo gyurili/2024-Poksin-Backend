@@ -1,9 +1,6 @@
 package com.viewmore.poksin.service;
 
-import com.viewmore.poksin.dto.user.CounselorRegisterDTO;
-import com.viewmore.poksin.dto.user.RegisterDTO;
-import com.viewmore.poksin.dto.user.UpdateUserDTO;
-import com.viewmore.poksin.dto.user.UserResponseDTO;
+import com.viewmore.poksin.dto.user.*;
 import com.viewmore.poksin.entity.CounselorEntity;
 import com.viewmore.poksin.entity.UserEntity;
 import com.viewmore.poksin.exception.DuplicateUsernameException;
@@ -104,5 +101,12 @@ public class UserService {
                 .build();
 
         counselorRepository.save(user);
+    }
+
+    public CounselorResponseDTO counselorMypage(String username) {
+        CounselorEntity user = counselorRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("해당 사용자 이름을 가진 사용자를 찾을 수 없습니다: " + username));
+
+        return CounselorResponseDTO.toDto(user);
     }
 }

@@ -2,10 +2,7 @@ package com.viewmore.poksin.controller;
 
 import com.viewmore.poksin.code.ErrorCode;
 import com.viewmore.poksin.code.SuccessCode;
-import com.viewmore.poksin.dto.user.CounselorRegisterDTO;
-import com.viewmore.poksin.dto.user.RegisterDTO;
-import com.viewmore.poksin.dto.user.UpdateUserDTO;
-import com.viewmore.poksin.dto.user.UserResponseDTO;
+import com.viewmore.poksin.dto.user.*;
 import com.viewmore.poksin.jwt.JWTUtil;
 import com.viewmore.poksin.dto.response.ResponseDTO;
 import com.viewmore.poksin.service.UserService;
@@ -47,6 +44,15 @@ public class UserController {
     public ResponseEntity<ResponseDTO> mypage() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         UserResponseDTO response = userService.mypage(username);
+        return ResponseEntity
+                .status(SuccessCode.SUCCESS_RETRIEVE_USER.getStatus().value())
+                .body(new ResponseDTO<>(SuccessCode.SUCCESS_RETRIEVE_USER, response));
+    }
+
+    @GetMapping("/counselor/mypage")
+    public ResponseEntity<ResponseDTO> counselorMypage() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        CounselorResponseDTO response = userService.counselorMypage(username);
         return ResponseEntity
                 .status(SuccessCode.SUCCESS_RETRIEVE_USER.getStatus().value())
                 .body(new ResponseDTO<>(SuccessCode.SUCCESS_RETRIEVE_USER, response));
