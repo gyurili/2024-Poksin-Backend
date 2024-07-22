@@ -3,6 +3,7 @@ package com.viewmore.poksin.controller;
 import com.viewmore.poksin.code.ErrorCode;
 import com.viewmore.poksin.code.SuccessCode;
 import com.viewmore.poksin.dto.RegisterDTO;
+import com.viewmore.poksin.dto.UpdateUserDTO;
 import com.viewmore.poksin.dto.UserResponseDTO;
 import com.viewmore.poksin.jwt.JWTUtil;
 import com.viewmore.poksin.response.ResponseDTO;
@@ -15,10 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -42,7 +40,7 @@ public class UserController {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         UserResponseDTO response = userService.mypage(username);
         return ResponseEntity
-                .status(SuccessCode.SUCCESS_REGISTER.getStatus().value())
+                .status(SuccessCode.SUCCESS_RETRIEVE_USER.getStatus().value())
                 .body(new ResponseDTO<>(SuccessCode.SUCCESS_RETRIEVE_USER, response));
     }
 
@@ -85,5 +83,14 @@ public class UserController {
         return ResponseEntity
                 .status(HttpStatus.OK.value())
                 .body(new ResponseDTO<>(SuccessCode.SUCCESS_REISSUE, null));
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<ResponseDTO> updateUser(@RequestBody  UpdateUserDTO updateUserDTO) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserResponseDTO response = userService.updateUser(username, updateUserDTO);
+        return ResponseEntity
+                .status(SuccessCode.SUCCESS_UPDATE_USER.getStatus().value())
+                .body(new ResponseDTO<>(SuccessCode.SUCCESS_UPDATE_USER, response));
     }
 }

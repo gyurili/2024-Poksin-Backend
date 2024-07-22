@@ -14,7 +14,7 @@ public enum SuccessCode {
     SUCCESS_LOGIN(HttpStatus.OK, "로그인을 성공했습니다. 헤더 토큰을 확인하세요."),
     SUCCESS_RETRIEVE_USER(HttpStatus.OK, "유저 정보를 성공적으로 조회했습니다."),
     SUCCESS_REISSUE(HttpStatus.OK, "토큰 재발급을 성공했습니다."),
-
+    SUCCESS_UPDATE_USER(HttpStatus.OK, "유저 정보를 성공적으로 수정했습니다.")
             ;
 
     private final HttpStatus status;
