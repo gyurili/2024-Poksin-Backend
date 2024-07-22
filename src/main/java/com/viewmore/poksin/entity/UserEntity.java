@@ -7,6 +7,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -25,6 +29,9 @@ public class UserEntity extends MainUserEntity{
     private boolean emergencyOpen;
     // 주소 공개 비공개 여부
     private boolean addressOpen;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<EvidenceEntity> evidences = new ArrayList<>();
 
     @Builder(builderMethodName = "userEntityBuilder")
     public UserEntity(String username, String password, String phoneNum, String emergencyNum, String address, boolean phoneOpen, boolean emergencyOpen, boolean addressOpen, String role) {
