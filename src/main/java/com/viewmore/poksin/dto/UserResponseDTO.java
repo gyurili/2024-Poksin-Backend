@@ -19,6 +19,7 @@ public class UserResponseDTO {
     private String emergencyNum;
     // 주소
     private String address;
+    private String role;
 
     public static UserResponseDTO toDto(UserEntity entity) {
         return UserResponseDTO.builder()
@@ -26,6 +27,7 @@ public class UserResponseDTO {
                 .phoneNum(entity.getPhoneNum())
                 .emergencyNum(entity.getEmergencyNum())
                 .address(entity.getAddress())
+                .role(entity.getRole())
                 .build();
     }
 }

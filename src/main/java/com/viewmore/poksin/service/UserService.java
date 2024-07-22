@@ -38,7 +38,7 @@ public class UserService {
                 .phoneNum(phoneNum)
                 .emergencyNum(emergencyNum)
                 .address(address)
-                .role("ROLE_ADMIN")
+                .role("USER")
                 .build();
 
         userRepository.save(user);
