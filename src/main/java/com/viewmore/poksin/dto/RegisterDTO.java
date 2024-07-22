@@ -11,8 +11,6 @@ public class RegisterDTO {
     private String username;
     // 비밀번호
     private String password;
-    // 닉네임
-    private String nickname;
     // 전화번호
     private String phoneNum;
     // 긴급 연락처

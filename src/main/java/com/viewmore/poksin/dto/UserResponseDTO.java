@@ -19,8 +19,6 @@ public class UserResponseDTO {
     private String username;
     // 전화번호
     private String phoneNum;
-    // 닉네임
-    private String nickname;
     // 긴급 연락처
     private String emergencyNum;
     // 주소
@@ -35,7 +33,6 @@ public class UserResponseDTO {
             return UserResponseDTO.builder()
                     .open(entity.getOpen())
                     .username(entity.getUsername())
-                    .nickname(entity.getNickname())
                     .phoneNum(entity.getPhoneNum())
                     .emergencyNum(entity.getEmergencyNum())
                     .address(entity.getAddress())
@@ -45,7 +42,6 @@ public class UserResponseDTO {
         }
         return UserResponseDTO.builder()
                 .open(entity.getOpen())
-                .nickname(entity.getNickname())
                 .username(entity.getUsername())
                 .emergencyNum(entity.getEmergencyNum())
                 .role(entity.getRole())
