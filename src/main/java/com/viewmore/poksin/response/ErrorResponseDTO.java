@@ -1,5 +1,6 @@
 package com.viewmore.poksin.response;
 
+import com.viewmore.poksin.code.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -13,5 +14,12 @@ public class ErrorResponseDTO {
     private String error;
     private String code;
     private String message;
+
+    public ErrorResponseDTO(ErrorCode errorCode) {
+        this.status = errorCode.getStatus().value();
+        this.error = errorCode.getStatus().name();
+        this.code = errorCode.name();
+        this.message = errorCode.getMessage();
+    }
 
 }
