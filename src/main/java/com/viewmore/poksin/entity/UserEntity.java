@@ -1,6 +1,6 @@
 package com.viewmore.poksin.entity;
 
-import com.viewmore.poksin.dto.UpdateUserDTO;
+import com.viewmore.poksin.dto.user.UpdateUserDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

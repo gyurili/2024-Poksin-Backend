@@ -2,9 +2,8 @@ package com.viewmore.poksin.jwt;
 
 import com.viewmore.poksin.code.ErrorCode;
 import com.viewmore.poksin.entity.MainUserEntity;
-import com.viewmore.poksin.entity.UserEntity;
 import com.viewmore.poksin.util.TokenErrorResponse;
-import com.viewmore.poksin.dto.CustomUserDetails;
+import com.viewmore.poksin.dto.user.CustomUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

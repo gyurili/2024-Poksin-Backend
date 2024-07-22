@@ -1,9 +1,9 @@
 package com.viewmore.poksin.service;
 
-import com.viewmore.poksin.dto.CounselorRegisterDTO;
-import com.viewmore.poksin.dto.RegisterDTO;
-import com.viewmore.poksin.dto.UpdateUserDTO;
-import com.viewmore.poksin.dto.UserResponseDTO;
+import com.viewmore.poksin.dto.user.CounselorRegisterDTO;
+import com.viewmore.poksin.dto.user.RegisterDTO;
+import com.viewmore.poksin.dto.user.UpdateUserDTO;
+import com.viewmore.poksin.dto.user.UserResponseDTO;
 import com.viewmore.poksin.entity.CounselorEntity;
 import com.viewmore.poksin.entity.UserEntity;
 import com.viewmore.poksin.exception.DuplicateUsernameException;
