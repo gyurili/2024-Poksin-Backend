@@ -3,6 +3,8 @@ package com.viewmore.poksin.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.viewmore.poksin.dto.evidence.CreateEvidenceDTO;
 import com.viewmore.poksin.dto.evidence.EvidenceResponseDTO;
+import com.viewmore.poksin.entity.CategoryEntity;
+import com.viewmore.poksin.entity.CategoryTypeEnum;
 import com.viewmore.poksin.entity.EvidenceEntity;
 import com.viewmore.poksin.entity.UserEntity;
 import com.viewmore.poksin.repository.EvidenceRepository;
@@ -29,9 +31,9 @@ public class EvidenceService {
 
         List<String> getUrls = new ArrayList<>();
 
-        String type = createEvidenceDTO.getType();
+        CategoryTypeEnum type = createEvidenceDTO.getType();
         for(MultipartFile file : fileUrls) {
-            getUrls.add(s3Uploader.upload(file, type));
+            getUrls.add(s3Uploader.upload(file, type.toString().toLowerCase()));
         }
 
         EvidenceEntity evidenceEntity = EvidenceEntity.builder()
