@@ -26,6 +26,7 @@ public class UserService {
         String emergencyNum = registerDTO.getEmergencyNum();
         String address = registerDTO.getAddress();
         String nickname = registerDTO.getNickname();
+
         boolean open = registerDTO.getOpen();
 
         Boolean isExist = userRepository.existsByUsername(username);
