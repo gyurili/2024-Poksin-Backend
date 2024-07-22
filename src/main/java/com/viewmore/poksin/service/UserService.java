@@ -28,7 +28,7 @@ public class UserService {
             throw new DuplicateUsernameException("중복된 아이디가 존재합니다.");
         }
 
-        UserEntity user = UserEntity.builder()
+        UserEntity user = UserEntity.userEntityBuilder()
                 .username(username)
                 .password(bCryptPasswordEncoder.encode(password))
                 .phoneNum(registerDTO.getPhoneNum())
