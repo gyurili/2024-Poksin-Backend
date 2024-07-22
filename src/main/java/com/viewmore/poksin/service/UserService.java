@@ -6,6 +6,7 @@ import com.viewmore.poksin.entity.UserEntity;
 import com.viewmore.poksin.exception.DuplicateUsernameException;
 import com.viewmore.poksin.repository.UserRepository;
 import com.viewmore.poksin.response.ResponseDTO;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
