@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @RestController
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
@@ -32,14 +33,6 @@ public class UserController {
                 .body(new ResponseDTO<>(SuccessCode.SUCCESS_REGISTER, null));
     }
 
-    @PostMapping("/counselor/signup")
-    public ResponseEntity<ResponseDTO> registerCounselor(@RequestBody CounselorRegisterDTO counselorRegisterDTO) {
-        userService.registerCounselor(counselorRegisterDTO);
-        return ResponseEntity
-                .status(SuccessCode.SUCCESS_COUNSELOR_REGISTER.getStatus().value())
-                .body(new ResponseDTO<>(SuccessCode.SUCCESS_COUNSELOR_REGISTER, null));
-    }
-
     @GetMapping("/mypage")
     public ResponseEntity<ResponseDTO> mypage() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -47,56 +40,6 @@ public class UserController {
         return ResponseEntity
                 .status(SuccessCode.SUCCESS_RETRIEVE_USER.getStatus().value())
                 .body(new ResponseDTO<>(SuccessCode.SUCCESS_RETRIEVE_USER, response));
-    }
-
-    @GetMapping("/counselor/mypage")
-    public ResponseEntity<ResponseDTO> counselorMypage() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        CounselorResponseDTO response = userService.counselorMypage(username);
-        return ResponseEntity
-                .status(SuccessCode.SUCCESS_RETRIEVE_USER.getStatus().value())
-                .body(new ResponseDTO<>(SuccessCode.SUCCESS_RETRIEVE_USER, response));
-    }
-
-    @PostMapping("/reissue")
-    public ResponseEntity<ResponseDTO> reissue(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // 헤더에서 refresh키에 담긴 토큰을 꺼냄
-        String refreshToken = request.getHeader("refresh");
-
-        if (refreshToken == null) {
-            TokenErrorResponse.sendErrorResponse(response, ErrorCode.TOKEN_MISSING);
-        }
-
-        try {
-            jwtUtil.isExpired(refreshToken);
-        } catch (ExpiredJwtException e) {
-            TokenErrorResponse.sendErrorResponse(response, ErrorCode.TOKEN_EXPIRED);
-        }
-
-        String type = jwtUtil.getType(refreshToken);
-        if (!type.equals("refreshToken")) {
-            TokenErrorResponse.sendErrorResponse(response, ErrorCode.INVALID_REFRESH_TOKEN);
-        }
-
-        // redis 연결하면 추가 예정
-//        Optional<RefreshEntity> isExist = refreshRedisRepository.findById(refreshToken);
-//        if (isExist.isEmpty()) {
-//            TokenErrorResponse.sendErrorResponse(response, "토큰이 만료되었습니다.");
-//        }
-
-        String username = jwtUtil.getUsername(refreshToken);
-        String role = jwtUtil.getRole(refreshToken);
-
-        // 새로운 Access token과 refreshToken 생성
-        String newAccessToken = jwtUtil.createJwt("accessToken", username, role, 600000L);
-        String newRefreshToken = jwtUtil.createJwt("refreshToken", username, role, 600000L);
-
-        response.setHeader("accessToken", "Bearer " + newAccessToken);
-        response.setHeader("refreshToken", "Bearer " + newRefreshToken);
-
-        return ResponseEntity
-                .status(HttpStatus.OK.value())
-                .body(new ResponseDTO<>(SuccessCode.SUCCESS_REISSUE, null));
     }
 
     @PutMapping("/update")

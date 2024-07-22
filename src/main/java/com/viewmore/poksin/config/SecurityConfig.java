@@ -60,8 +60,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/login",
                                 "/error",
-                                "/register",
-                                "/counselor/signup",
+                                "/user/register",
+                                "/counselor/register",
                                 "/reissue",
                                 "/swagger-ui/**",
                                 "/swagger-resources/**",
