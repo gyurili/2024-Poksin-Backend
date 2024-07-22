@@ -61,6 +61,7 @@ public class SecurityConfig {
                                 "/login",
                                 "/error",
                                 "/register",
+                                "/counselor/signup",
                                 "/reissue",
                                 "/swagger-ui/**",
                                 "/swagger-resources/**",

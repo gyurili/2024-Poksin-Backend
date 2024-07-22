@@ -1,12 +1,16 @@
 package com.viewmore.poksin.service;
 
+import com.viewmore.poksin.dto.CounselorRegisterDTO;
 import com.viewmore.poksin.dto.RegisterDTO;
 import com.viewmore.poksin.dto.UpdateUserDTO;
 import com.viewmore.poksin.dto.UserResponseDTO;
+import com.viewmore.poksin.entity.CounselorEntity;
 import com.viewmore.poksin.entity.UserEntity;
 import com.viewmore.poksin.exception.DuplicateUsernameException;
+import com.viewmore.poksin.repository.CounselorRepository;
 import com.viewmore.poksin.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,14 +19,25 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+    @Autowired
     private final UserRepository userRepository;
+    @Autowired
+    private final CounselorRepository counselorRepository;
+
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     public void register(RegisterDTO registerDTO) {
 
         String username = registerDTO.getUsername();
         String password = registerDTO.getPassword();
 
+        // 상담사, 일반 유저 아이디 중복 검사
         Boolean isExist = userRepository.existsByUsername(username);
+
+        if (isExist) {
+            throw new DuplicateUsernameException("중복된 아이디가 존재합니다.");
+        }
+
+        isExist = counselorRepository.existsByUsername(username);
 
         if (isExist) {
             throw new DuplicateUsernameException("중복된 아이디가 존재합니다.");
@@ -58,5 +73,36 @@ public class UserService {
         user.updateUser(updateUserDTO);
 
         return UserResponseDTO.toDto(user);
+    }
+
+    @Transactional
+    public void registerCounselor(CounselorRegisterDTO counselorRegisterDTO) {
+        String username = counselorRegisterDTO.getUsername();
+        String password = counselorRegisterDTO.getPassword();
+
+        // 상담사, 일반 유저 아이디 중복 검사
+        Boolean isExist = counselorRepository.existsByUsername(username);
+
+        if (isExist) {
+            throw new DuplicateUsernameException("중복된 아이디가 존재합니다.");
+        }
+
+        isExist = userRepository.existsByUsername(username);
+
+        if (isExist) {
+            throw new DuplicateUsernameException("중복된 아이디가 존재합니다.");
+        }
+
+        CounselorEntity user = CounselorEntity.counselorEntityBuilder()
+                .username(username)
+                .password(bCryptPasswordEncoder.encode(password))
+                .phoneNum(counselorRegisterDTO.getPhoneNum())
+                .specialty(counselorRegisterDTO.getSpecialty())
+                .count(0)
+                .career(counselorRegisterDTO.getCareer())
+                .role("ADMIN")
+                .build();
+
+        counselorRepository.save(user);
     }
 }

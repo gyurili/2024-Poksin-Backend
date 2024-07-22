@@ -2,6 +2,7 @@ package com.viewmore.poksin.controller;
 
 import com.viewmore.poksin.code.ErrorCode;
 import com.viewmore.poksin.code.SuccessCode;
+import com.viewmore.poksin.dto.CounselorRegisterDTO;
 import com.viewmore.poksin.dto.RegisterDTO;
 import com.viewmore.poksin.dto.UpdateUserDTO;
 import com.viewmore.poksin.dto.UserResponseDTO;
@@ -33,6 +34,14 @@ public class UserController {
         return ResponseEntity
                 .status(SuccessCode.SUCCESS_REGISTER.getStatus().value())
                 .body(new ResponseDTO<>(SuccessCode.SUCCESS_REGISTER, null));
+    }
+
+    @PostMapping("/counselor/signup")
+    public ResponseEntity<ResponseDTO> registerCounselor(@RequestBody CounselorRegisterDTO counselorRegisterDTO) {
+        userService.registerCounselor(counselorRegisterDTO);
+        return ResponseEntity
+                .status(SuccessCode.SUCCESS_COUNSELOR_REGISTER.getStatus().value())
+                .body(new ResponseDTO<>(SuccessCode.SUCCESS_COUNSELOR_REGISTER, null));
     }
 
     @GetMapping("/mypage")
