@@ -1,9 +1,9 @@
 package com.viewmore.poksin.jwt;
 
 import com.viewmore.poksin.code.ErrorCode;
-import com.viewmore.poksin.entity.UserEntity;
+import com.viewmore.poksin.entity.MainUserEntity;
 import com.viewmore.poksin.util.TokenErrorResponse;
-import com.viewmore.poksin.dto.CustomUserDetails;
+import com.viewmore.poksin.dto.user.CustomUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -57,7 +57,7 @@ public class JWTFilter extends OncePerRequestFilter {
         String username = jwtUtil.getUsername(token);
         String role = jwtUtil.getRole(token);
 
-        UserEntity user = UserEntity.builder()
+        MainUserEntity user = MainUserEntity.signupBuilder()
                 .username(username)
                 .password("temppassword")
                 .role(role)

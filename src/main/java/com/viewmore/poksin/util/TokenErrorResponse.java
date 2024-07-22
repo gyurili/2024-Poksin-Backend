@@ -2,7 +2,7 @@ package com.viewmore.poksin.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viewmore.poksin.code.ErrorCode;
-import com.viewmore.poksin.response.ErrorResponseDTO;
+import com.viewmore.poksin.dto.response.ErrorResponseDTO;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

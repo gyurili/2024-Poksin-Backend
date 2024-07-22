@@ -1,4 +1,4 @@
-package com.viewmore.poksin.dto;
+package com.viewmore.poksin.dto.user;
 
 import com.viewmore.poksin.entity.UserEntity;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,7 @@
 package com.viewmore.poksin.exception;
 
 import com.viewmore.poksin.code.ErrorCode;
-import com.viewmore.poksin.response.ErrorResponseDTO;
+import com.viewmore.poksin.dto.response.ErrorResponseDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;

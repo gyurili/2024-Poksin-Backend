@@ -1,30 +1,18 @@
 package com.viewmore.poksin.entity;
 
-import com.viewmore.poksin.dto.UpdateUserDTO;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.viewmore.poksin.dto.user.UpdateUserDTO;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Builder
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
-public class UserEntity extends BaseEntity{
+@AllArgsConstructor
+public class UserEntity extends MainUserEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    // 아이디
-    private String username;
-    // 비밀번호
-    private String password;
     // 전화번호
     private String phoneNum;
     // 긴급 연락처
@@ -37,8 +25,17 @@ public class UserEntity extends BaseEntity{
     private boolean emergencyOpen;
     // 주소 공개 비공개 여부
     private boolean addressOpen;
-    // admin 계정인가?
-    private String role;
+
+    @Builder(builderMethodName = "userEntityBuilder")
+    public UserEntity(String username, String password, String phoneNum, String emergencyNum, String address, boolean phoneOpen, boolean emergencyOpen, boolean addressOpen, String role) {
+        super(username, password, role);
+        this.phoneNum = phoneNum;
+        this.emergencyNum = emergencyNum;
+        this.address = address;
+        this.phoneOpen = phoneOpen;
+        this.emergencyOpen = emergencyOpen;
+        this.addressOpen = addressOpen;
+    }
 
     public boolean getphoneOpen() {
         return phoneOpen;
@@ -61,4 +58,5 @@ public class UserEntity extends BaseEntity{
         this.addressOpen = updateUserDTO.getAddressOpen();
 
     }
+
 }

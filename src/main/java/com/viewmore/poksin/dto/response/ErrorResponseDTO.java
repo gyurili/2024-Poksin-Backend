@@ -1,4 +1,4 @@
-package com.viewmore.poksin.response;
+package com.viewmore.poksin.dto.response;
 
 import com.viewmore.poksin.code.ErrorCode;
 import lombok.AllArgsConstructor;

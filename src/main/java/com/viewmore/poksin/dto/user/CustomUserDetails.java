@@ -1,5 +1,6 @@
-package com.viewmore.poksin.dto;
+package com.viewmore.poksin.dto.user;
 
+import com.viewmore.poksin.entity.MainUserEntity;
 import com.viewmore.poksin.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,7 +12,7 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class CustomUserDetails  implements UserDetails {
 
-    private final UserEntity userEntity;
+    private final MainUserEntity userEntity;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
