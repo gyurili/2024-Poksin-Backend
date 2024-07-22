@@ -8,17 +8,13 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum SuccessCode {
     /**
-     * 회원가입
+     * User
      */
     SUCCESS_REGISTER(HttpStatus.OK, "회원가입을 성공했습니다."),
-
-    /**
-     * 로그인
-     */
     SUCCESS_LOGIN(HttpStatus.OK, "로그인을 성공했습니다. 헤더 토큰을 확인하세요."),
+    SUCCESS_RETRIEVE_USER(HttpStatus.OK, "유저 정보를 성공적으로 조회했습니다.")
 
     ;
-
 
     private final HttpStatus status;
     private final String message;
