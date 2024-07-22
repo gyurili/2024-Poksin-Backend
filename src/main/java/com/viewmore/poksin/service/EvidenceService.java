@@ -39,7 +39,7 @@ public class EvidenceService {
         }
 
         CategoryEntity category = categoryRepository.findByName(type)
-                .orElseThrow(() -> new UsernameNotFoundException("해당 사용자 이름을 가진 사용자를 찾을 수 없습니다: " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("해당 카테고리 이름을 찾을 수 없습니다."));
 
 
         EvidenceEntity evidenceEntity = EvidenceEntity.builder()
@@ -61,6 +61,26 @@ public class EvidenceService {
 
         List<EvidenceEntity> evidenceEntityList = evidenceRepository.findAllByUser(user);
 
+        List<EvidenceResponseDTO> evidenceResponseDTOS = new ArrayList<>();
+        evidenceEntityList.forEach(entity -> {
+            try {
+                evidenceResponseDTOS.add(EvidenceResponseDTO.toDto(entity));
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        return evidenceResponseDTOS;
+    }
+
+    public List<EvidenceResponseDTO> findEvidenceByCategory(String username, CategoryTypeEnum name) {
+        UserEntity user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("해당 사용자 이름을 가진 사용자를 찾을 수 없습니다: " + username));
+
+        CategoryEntity category = categoryRepository.findByName(name)
+                .orElseThrow(() -> new UsernameNotFoundException("해당 카테고리 이름을 찾을 수 없습니다."));
+
+        List<EvidenceEntity> evidenceEntityList = evidenceRepository.findAllByUserAndCategory(user, category);
         List<EvidenceResponseDTO> evidenceResponseDTOS = new ArrayList<>();
         evidenceEntityList.forEach(entity -> {
             try {

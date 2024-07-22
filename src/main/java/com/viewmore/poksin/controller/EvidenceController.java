@@ -5,6 +5,7 @@ import com.viewmore.poksin.code.SuccessCode;
 import com.viewmore.poksin.dto.evidence.CreateEvidenceDTO;
 import com.viewmore.poksin.dto.evidence.EvidenceResponseDTO;
 import com.viewmore.poksin.dto.response.ResponseDTO;
+import com.viewmore.poksin.entity.CategoryTypeEnum;
 import com.viewmore.poksin.service.EvidenceService;
 import com.viewmore.poksin.service.S3Uploader;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +47,18 @@ public class EvidenceController {
     public ResponseEntity<ResponseDTO> findAllEvidence() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         List<EvidenceResponseDTO> response = evidenceService.findAll(username);
+        return ResponseEntity
+                .status(SuccessCode.SUCCESS_RETRIEVE_EVIDENCE.getStatus().value())
+                .body(new ResponseDTO<>(SuccessCode.SUCCESS_RETRIEVE_EVIDENCE, response));
+
+    }
+
+    @GetMapping("/category")
+    public ResponseEntity<ResponseDTO> findEvidenceByCategory(
+            @RequestParam("name") CategoryTypeEnum name
+    ) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<EvidenceResponseDTO> response = evidenceService.findEvidenceByCategory(username, name);
         return ResponseEntity
                 .status(SuccessCode.SUCCESS_RETRIEVE_EVIDENCE.getStatus().value())
                 .body(new ResponseDTO<>(SuccessCode.SUCCESS_RETRIEVE_EVIDENCE, response));
