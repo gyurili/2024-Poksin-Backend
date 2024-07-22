@@ -1,5 +1,6 @@
 package com.viewmore.poksin.entity;
 
+import com.viewmore.poksin.dto.UpdateUserDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -49,5 +50,15 @@ public class UserEntity extends BaseEntity{
 
     public boolean getAddressOpen() {
         return addressOpen;
+    }
+
+    public void updateUser(UpdateUserDTO updateUserDTO) {
+        this.address = updateUserDTO.getAddress() == null ? this.address : updateUserDTO.getAddress();
+        this.emergencyNum = updateUserDTO.getEmergencyNum() == null ? this.emergencyNum : updateUserDTO.getEmergencyNum();
+        this.phoneNum = updateUserDTO.getPhoneNum() == null ? this.phoneNum : updateUserDTO.getPhoneNum();
+        this.phoneOpen = updateUserDTO.getphoneOpen();
+        this.emergencyOpen = updateUserDTO.getEmergencyOpen();
+        this.addressOpen = updateUserDTO.getAddressOpen();
+
     }
 }

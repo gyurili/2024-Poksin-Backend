@@ -1,16 +1,15 @@
 package com.viewmore.poksin.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterDTO {
-    // 아이디
-    private String username;
-    // 비밀번호
-    private String password;
+public class UpdateUserDTO {
     // 전화번호
     private String phoneNum;
     // 긴급 연락처
