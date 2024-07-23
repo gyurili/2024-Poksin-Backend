@@ -3,6 +3,7 @@ package com.viewmore.poksin.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.viewmore.poksin.dto.evidence.CreateEvidenceDTO;
 import com.viewmore.poksin.dto.evidence.EvidenceResponseDTO;
+import com.viewmore.poksin.dto.evidence.MonthEvidenceResponseDTO;
 import com.viewmore.poksin.entity.CategoryEntity;
 import com.viewmore.poksin.entity.CategoryTypeEnum;
 import com.viewmore.poksin.entity.EvidenceEntity;
@@ -18,8 +19,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -57,22 +61,30 @@ public class EvidenceService {
         return EvidenceResponseDTO.toDto(evidenceEntity);
     }
 
-    public List<EvidenceResponseDTO> findAll(String username) {
+    public List<MonthEvidenceResponseDTO> findAll(String username, String year, String month) {
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("해당 사용자 이름을 가진 사용자를 찾을 수 없습니다: " + username));
 
-        List<EvidenceEntity> evidenceEntityList = evidenceRepository.findAllByUser(user);
+        List<EvidenceEntity> evidenceEntityList = evidenceRepository.findByUserAndYearAndMonth(user, Integer.parseInt(year), Integer.parseInt(month));
 
         List<EvidenceResponseDTO> evidenceResponseDTOS = new ArrayList<>();
-        evidenceEntityList.forEach(entity -> {
-            try {
-                evidenceResponseDTOS.add(EvidenceResponseDTO.toDto(entity));
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-        });
 
-        return evidenceResponseDTOS;
+        // 날짜 별로 그룹핑
+        Map<LocalDate, Long> groupedByDay = evidenceEntityList.stream()
+                .collect(Collectors.groupingBy(
+                        evidence -> evidence.getCreatedAt().toLocalDate(),
+                        Collectors.counting()
+                ));
+
+        List<MonthEvidenceResponseDTO> responseDTOs = new ArrayList<>();
+        for (Map.Entry<LocalDate, Long> entry : groupedByDay.entrySet()) {
+            responseDTOs.add(MonthEvidenceResponseDTO.builder()
+                    .created_at(LocalDate.from(entry.getKey().atStartOfDay()))
+                    .evidenceCount(entry.getValue().intValue())
+                    .build());
+        }
+
+        return responseDTOs;
     }
 
     public List<EvidenceResponseDTO> findEvidenceByCategory(String username, CategoryTypeEnum name) {
@@ -94,6 +106,7 @@ public class EvidenceService {
 
         return evidenceResponseDTOS;
     }
+
 
     public void deleteEvidence(Integer id) throws JsonProcessingException {
         EvidenceEntity evidence = evidenceRepository.findById(id)

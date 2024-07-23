@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.viewmore.poksin.code.SuccessCode;
 import com.viewmore.poksin.dto.evidence.CreateEvidenceDTO;
 import com.viewmore.poksin.dto.evidence.EvidenceResponseDTO;
+import com.viewmore.poksin.dto.evidence.MonthEvidenceResponseDTO;
 import com.viewmore.poksin.dto.response.ResponseDTO;
 import com.viewmore.poksin.entity.CategoryTypeEnum;
 import com.viewmore.poksin.service.EvidenceService;
@@ -42,15 +43,17 @@ public class EvidenceController {
                 .body(new ResponseDTO<>(SuccessCode.SUCCESS_CREATE_EVIDENCE, response));
     }
 
-    // 테스트를 위한 조회
-    // 추후 생성일을 기준으로 GET 요청, 전체 조회일 경우 기록 개수만 응답
-    @GetMapping("/find-all")
-    public ResponseEntity<ResponseDTO> findAllEvidence() {
+    // year, month로 증거 기록 조회
+    @GetMapping("/get-evidence")
+    public ResponseEntity<ResponseDTO> findAllEvidence(
+            @RequestParam("year") String year,
+            @RequestParam("month") String month
+             ) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        List<EvidenceResponseDTO> response = evidenceService.findAll(username);
+        List<MonthEvidenceResponseDTO> response = evidenceService.findAll(username, year, month);
         return ResponseEntity
-                .status(SuccessCode.SUCCESS_RETRIEVE_EVIDENCE.getStatus().value())
-                .body(new ResponseDTO<>(SuccessCode.SUCCESS_RETRIEVE_EVIDENCE, response));
+                .status(SuccessCode.SUCCESS_RETRIEVE_MONTH_EVIDENCE.getStatus().value())
+                .body(new ResponseDTO<>(SuccessCode.SUCCESS_RETRIEVE_MONTH_EVIDENCE, response));
 
     }
 
@@ -61,8 +64,8 @@ public class EvidenceController {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         List<EvidenceResponseDTO> response = evidenceService.findEvidenceByCategory(username, name);
         return ResponseEntity
-                .status(SuccessCode.SUCCESS_RETRIEVE_EVIDENCE.getStatus().value())
-                .body(new ResponseDTO<>(SuccessCode.SUCCESS_RETRIEVE_EVIDENCE, response));
+                .status(SuccessCode.SUCCESS_RETRIEVE_MONTH_EVIDENCE.getStatus().value())
+                .body(new ResponseDTO<>(SuccessCode.SUCCESS_RETRIEVE_MONTH_EVIDENCE, response));
 
     }
 
