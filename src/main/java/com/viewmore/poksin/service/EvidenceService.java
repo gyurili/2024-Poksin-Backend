@@ -61,7 +61,7 @@ public class EvidenceService {
         return EvidenceResponseDTO.toDto(evidenceEntity);
     }
 
-    public List<MonthEvidenceResponseDTO> findAll(String username, String year, String month) {
+    public List<MonthEvidenceResponseDTO> findAllByMonth(String username, String year, String month) {
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("해당 사용자 이름을 가진 사용자를 찾을 수 없습니다: " + username));
 

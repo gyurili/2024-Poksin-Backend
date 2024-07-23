@@ -50,7 +50,7 @@ public class EvidenceController {
             @RequestParam("month") String month
              ) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        List<MonthEvidenceResponseDTO> response = evidenceService.findAll(username, year, month);
+        List<MonthEvidenceResponseDTO> response = evidenceService.findAllByMonth(username, year, month);
         return ResponseEntity
                 .status(SuccessCode.SUCCESS_RETRIEVE_MONTH_EVIDENCE.getStatus().value())
                 .body(new ResponseDTO<>(SuccessCode.SUCCESS_RETRIEVE_MONTH_EVIDENCE, response));
