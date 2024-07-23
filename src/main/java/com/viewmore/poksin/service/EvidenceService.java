@@ -2,7 +2,7 @@ package com.viewmore.poksin.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.viewmore.poksin.dto.evidence.CreateEvidenceDTO;
-import com.viewmore.poksin.dto.evidence.EvidenceResponseDTO;
+import com.viewmore.poksin.dto.evidence.EvidenceDetailResponseDTO;
 import com.viewmore.poksin.dto.evidence.MonthEvidenceResponseDTO;
 import com.viewmore.poksin.entity.CategoryEntity;
 import com.viewmore.poksin.entity.CategoryTypeEnum;
@@ -33,7 +33,7 @@ public class EvidenceService {
     private final CategoryRepository categoryRepository;
     private final S3Uploader s3Uploader;
 
-    public EvidenceResponseDTO updateFile(String username, CreateEvidenceDTO createEvidenceDTO, List<MultipartFile> fileUrls) throws IOException {
+    public EvidenceDetailResponseDTO updateFile(String username, CreateEvidenceDTO createEvidenceDTO, List<MultipartFile> fileUrls) throws IOException {
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("해당 사용자 이름을 가진 사용자를 찾을 수 없습니다: " + username));
 
@@ -58,7 +58,7 @@ public class EvidenceService {
         evidenceEntity.setFileUrls(getUrls);
 
         evidenceRepository.save(evidenceEntity);
-        return EvidenceResponseDTO.toDto(evidenceEntity);
+        return EvidenceDetailResponseDTO.toDto(evidenceEntity);
     }
 
     public List<MonthEvidenceResponseDTO> findAllByMonth(String username, String year, String month) {
@@ -67,7 +67,7 @@ public class EvidenceService {
 
         List<EvidenceEntity> evidenceEntityList = evidenceRepository.findByUserAndYearAndMonth(user, Integer.parseInt(year), Integer.parseInt(month));
 
-        List<EvidenceResponseDTO> evidenceResponseDTOS = new ArrayList<>();
+        List<EvidenceDetailResponseDTO> evidenceResponseDTOS = new ArrayList<>();
 
         // 날짜 별로 그룹핑
         Map<LocalDate, Long> groupedByDay = evidenceEntityList.stream()
@@ -87,18 +87,19 @@ public class EvidenceService {
         return responseDTOs;
     }
 
-    public List<EvidenceResponseDTO> findEvidenceByCategory(String username, CategoryTypeEnum name) {
+    public List<EvidenceDetailResponseDTO> findAllByDay(String username, String year, String month, String day, CategoryTypeEnum category) {
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("해당 사용자 이름을 가진 사용자를 찾을 수 없습니다: " + username));
 
-        CategoryEntity category = categoryRepository.findByName(name)
+        CategoryEntity categoryEntity = categoryRepository.findByName(category)
                 .orElseThrow(() -> new CategoryNotFoundException("해당 카테고리 이름을 찾을 수 없습니다."));
 
-        List<EvidenceEntity> evidenceEntityList = evidenceRepository.findAllByUserAndCategory(user, category);
-        List<EvidenceResponseDTO> evidenceResponseDTOS = new ArrayList<>();
+        List<EvidenceEntity> evidenceEntityList = evidenceRepository.findByUserAndYearAndMonthAndDay(user, Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day), categoryEntity);
+
+        List<EvidenceDetailResponseDTO> evidenceResponseDTOS = new ArrayList<>();
         evidenceEntityList.forEach(entity -> {
             try {
-                evidenceResponseDTOS.add(EvidenceResponseDTO.toDto(entity));
+                evidenceResponseDTOS.add(EvidenceDetailResponseDTO.toDto(entity));
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
@@ -106,7 +107,6 @@ public class EvidenceService {
 
         return evidenceResponseDTOS;
     }
-
 
     public void deleteEvidence(Integer id) throws JsonProcessingException {
         EvidenceEntity evidence = evidenceRepository.findById(id)

@@ -4,12 +4,11 @@ package com.viewmore.poksin.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.viewmore.poksin.code.SuccessCode;
 import com.viewmore.poksin.dto.evidence.CreateEvidenceDTO;
-import com.viewmore.poksin.dto.evidence.EvidenceResponseDTO;
+import com.viewmore.poksin.dto.evidence.EvidenceDetailResponseDTO;
 import com.viewmore.poksin.dto.evidence.MonthEvidenceResponseDTO;
 import com.viewmore.poksin.dto.response.ResponseDTO;
 import com.viewmore.poksin.entity.CategoryTypeEnum;
 import com.viewmore.poksin.service.EvidenceService;
-import com.viewmore.poksin.service.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/evidence")
@@ -37,15 +35,15 @@ public class EvidenceController {
             @RequestParam("fileUrls") List<MultipartFile> fileUrls) throws IOException {
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        EvidenceResponseDTO response = evidenceService.updateFile(username, createEvidenceDTO, fileUrls);
+        EvidenceDetailResponseDTO response = evidenceService.updateFile(username, createEvidenceDTO, fileUrls);
         return ResponseEntity
                 .status(SuccessCode.SUCCESS_CREATE_EVIDENCE.getStatus().value())
                 .body(new ResponseDTO<>(SuccessCode.SUCCESS_CREATE_EVIDENCE, response));
     }
 
     // year, month로 증거 기록 조회
-    @GetMapping("/get-evidence")
-    public ResponseEntity<ResponseDTO> findAllEvidence(
+    @GetMapping("/get-month-evidence")
+    public ResponseEntity<ResponseDTO> findAllEvidenceByMonth(
             @RequestParam("year") String year,
             @RequestParam("month") String month
              ) {
@@ -54,19 +52,20 @@ public class EvidenceController {
         return ResponseEntity
                 .status(SuccessCode.SUCCESS_RETRIEVE_MONTH_EVIDENCE.getStatus().value())
                 .body(new ResponseDTO<>(SuccessCode.SUCCESS_RETRIEVE_MONTH_EVIDENCE, response));
-
     }
 
-    @GetMapping("/category")
-    public ResponseEntity<ResponseDTO> findEvidenceByCategory(
-            @RequestParam("name") CategoryTypeEnum name
+    @GetMapping("/get-day-evidence")
+    public ResponseEntity<ResponseDTO> findAllEvidenceByDay(
+            @RequestParam("year") String year,
+            @RequestParam("month") String month,
+            @RequestParam("day") String day,
+            @RequestParam("category") CategoryTypeEnum category
     ) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        List<EvidenceResponseDTO> response = evidenceService.findEvidenceByCategory(username, name);
+        List<EvidenceDetailResponseDTO> response = evidenceService.findAllByDay(username, year, month, day, category);
         return ResponseEntity
-                .status(SuccessCode.SUCCESS_RETRIEVE_MONTH_EVIDENCE.getStatus().value())
-                .body(new ResponseDTO<>(SuccessCode.SUCCESS_RETRIEVE_MONTH_EVIDENCE, response));
-
+                .status(SuccessCode.SUCCESS_RETRIEVE_DAY_EVIDENCE.getStatus().value())
+                .body(new ResponseDTO<>(SuccessCode.SUCCESS_RETRIEVE_DAY_EVIDENCE, response));
     }
 
     @DeleteMapping("/delete/{id}")
