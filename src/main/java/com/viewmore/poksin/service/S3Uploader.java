@@ -39,7 +39,6 @@ public class S3Uploader {
         File uploadFile = convert(multipartFile);
 
         String uploadImageUrl = putS3(uploadFile, fileName);
-        removeNewFile(uploadFile);
         return uploadImageUrl;
     }
 
@@ -65,14 +64,6 @@ public class S3Uploader {
         amazonS3.putObject(new PutObjectRequest(bucket, fileName, uploadFile)
                 .withCannedAcl(CannedAccessControlList.PublicRead));
         return amazonS3.getUrl(bucket, fileName).toString();
-    }
-
-    private void removeNewFile(File targetFile) {
-        if (targetFile.delete()) {
-            log.info("파일이 삭제되었습니다.");
-        } else {
-            log.info("파일이 삭제되지 못했습니다.");
-        }
     }
 
     public void deleteFile(String fileName) {

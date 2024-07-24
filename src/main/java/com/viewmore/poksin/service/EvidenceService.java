@@ -45,7 +45,7 @@ public class EvidenceService {
         }
 
         CategoryEntity category = categoryRepository.findByName(type)
-                .orElseThrow(() -> new UsernameNotFoundException("해당 카테고리 이름을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CategoryNotFoundException("해당 카테고리 이름을 찾을 수 없습니다."));
 
 
         EvidenceEntity evidenceEntity = EvidenceEntity.builder()
