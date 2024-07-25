@@ -5,6 +5,7 @@ import com.viewmore.poksin.code.SuccessCode;
 import com.viewmore.poksin.dto.user.*;
 import com.viewmore.poksin.jwt.JWTUtil;
 import com.viewmore.poksin.dto.response.ResponseDTO;
+import com.viewmore.poksin.repository.RefreshRedisRepository;
 import com.viewmore.poksin.service.UserService;
 import com.viewmore.poksin.util.TokenErrorResponse;
 import io.jsonwebtoken.ExpiredJwtException;
