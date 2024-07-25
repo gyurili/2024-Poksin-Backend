@@ -3,10 +3,8 @@ package com.viewmore.poksin.dto.evidence;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.viewmore.poksin.entity.CategoryTypeEnum;
 import com.viewmore.poksin.entity.EvidenceEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.viewmore.poksin.entity.ViolenceSegmentEntity;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,4 +37,30 @@ public class EvidenceDetailResponseDTO {
                 .created_at(entity.getCreatedAt())
                 .build();
     }
+
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    public static class EvidenceVideoResponseDTO {
+        private int id;
+        // 자료 원본
+        private int evidence_id;
+        // 폭력 지속 시간
+        private Float duration;
+        // 자료와 함께 첨부하는 파일 (url)
+        private String fileurl;
+
+
+        public static EvidenceVideoResponseDTO toDto(ViolenceSegmentEntity violenceSegmentEntity) {
+            return builder()
+                    .id(violenceSegmentEntity.getId())
+                    .duration(violenceSegmentEntity.getDuration())
+                    .evidence_id(violenceSegmentEntity.getEvidence().getId())
+                    .fileurl(violenceSegmentEntity.getS3_url())
+                    .build();
+        }
+    }
+
+
 }

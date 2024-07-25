@@ -24,6 +24,7 @@ public enum SuccessCode {
     SUCCESS_RETRIEVE_MONTH_EVIDENCE(HttpStatus.OK, "월별 증거를 성공적으로 조회했습니다."),
     SUCCESS_RETRIEVE_DAY_EVIDENCE(HttpStatus.OK, "일별 증거를 성공적으로 조회했습니다."),
     SUCCESS_DELETE_EVIDENCE(HttpStatus.OK, "증거를 성공적으로 삭제했습니다."),
+    SUCCESS_DETAIL_VIDEO_EVIDENCE(HttpStatus.OK, "증거 영상을 성공적으로 불러왔습니다.")
     ;
 
     private final HttpStatus status;

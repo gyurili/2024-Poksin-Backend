@@ -35,7 +35,9 @@ public class EvidenceController {
             @RequestParam("fileUrls") List<MultipartFile> fileUrls) throws IOException {
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println("controller"+username);
         EvidenceDetailResponseDTO response = evidenceService.updateFile(username, createEvidenceDTO, fileUrls);
+        System.out.println(response);
         return ResponseEntity
                 .status(SuccessCode.SUCCESS_CREATE_EVIDENCE.getStatus().value())
                 .body(new ResponseDTO<>(SuccessCode.SUCCESS_CREATE_EVIDENCE, response));
@@ -62,6 +64,7 @@ public class EvidenceController {
             @RequestParam("category") CategoryTypeEnum category
     ) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println(username);
         List<EvidenceDetailResponseDTO> response = evidenceService.findAllByDay(username, year, month, day, category);
         return ResponseEntity
                 .status(SuccessCode.SUCCESS_RETRIEVE_DAY_EVIDENCE.getStatus().value())
@@ -77,5 +80,17 @@ public class EvidenceController {
                 .status(SuccessCode.SUCCESS_DELETE_EVIDENCE.getStatus().value())
                 .body(new ResponseDTO<>(SuccessCode.SUCCESS_DELETE_EVIDENCE, null));
 
+    }
+
+
+    // 이거는 비디오 디테일을 보여주는 controller 부분임
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<ResponseDTO> detailVideoEvidence(
+            @PathVariable("id") Integer id
+    ) throws JsonProcessingException {
+        List<EvidenceDetailResponseDTO.EvidenceVideoResponseDTO> videoResponseDTOS = evidenceService.detailVideoEvidence(id);
+        return ResponseEntity
+                .status(SuccessCode.SUCCESS_DETAIL_VIDEO_EVIDENCE.getStatus().value())
+                .body(new ResponseDTO<>(SuccessCode.SUCCESS_DETAIL_VIDEO_EVIDENCE, videoResponseDTOS));
     }
 }
