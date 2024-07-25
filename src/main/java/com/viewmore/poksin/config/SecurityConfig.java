@@ -89,7 +89,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http
-                .addFilterBefore(new CustomLogoutFilter(jwtUtil, redisRepository), LogoutFilter.class);
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRedisRepository), LogoutFilter.class);
 
         return http.build();
     }
