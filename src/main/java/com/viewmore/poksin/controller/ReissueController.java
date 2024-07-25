@@ -5,7 +5,8 @@ import com.viewmore.poksin.code.SuccessCode;
 import com.viewmore.poksin.dto.response.ResponseDTO;
 import com.viewmore.poksin.entity.RefreshEntity;
 import com.viewmore.poksin.jwt.JWTUtil;
-import com.viewmore.poksin.repository.RefreshRepository;
+import com.viewmore.poksin.repository.RefreshRedisRepository;
+import com.viewmore.poksin.service.UserService;
 import com.viewmore.poksin.util.TokenErrorResponse;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +26,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ReissueController {
     private final JWTUtil jwtUtil;
-    private final RefreshRepository redisRepository;
+    private final RefreshRedisRepository refreshRedisRepository;
+
 
 
     @PostMapping()
@@ -48,7 +50,9 @@ public class ReissueController {
             TokenErrorResponse.sendErrorResponse(response, ErrorCode.INVALID_REFRESH_TOKEN);
         }
 
-        Optional<RefreshEntity> isExist = redisRepository.findById(refreshToken);
+        // DB에 저장되어 있는지 확인
+        Optional<RefreshEntity> isExist = refreshRedisRepository.findById(refreshToken);
+
         if (isExist.isEmpty()) {
             TokenErrorResponse.sendErrorResponse(response, ErrorCode.TOKEN_EXPIRED);
         }
@@ -60,10 +64,9 @@ public class ReissueController {
         String newAccessToken = jwtUtil.createJwt("accessToken", username, role, 600000L);
         String newRefreshToken = jwtUtil.createJwt("refreshToken", username, role, 600000L);
 
-        // 기존의 refreshtoken 제거 후 새로운 refresh token 저장
-        redisRepository.deleteById(refreshToken);
-        RefreshEntity refreshEntity = new RefreshEntity(newRefreshToken, username);
-        redisRepository.save(refreshEntity);
+        refreshRedisRepository.deleteById(refreshToken);
+        addRefreshEntity(newRefreshToken, username);
+
 
         response.setHeader("accessToken", "Bearer " + newAccessToken);
         response.setHeader("refreshToken", "Bearer " + newRefreshToken);
@@ -71,5 +74,10 @@ public class ReissueController {
         return ResponseEntity
                 .status(HttpStatus.OK.value())
                 .body(new ResponseDTO<>(SuccessCode.SUCCESS_REISSUE, null));
+    }
+
+    private void addRefreshEntity(String refresh, String username) {
+        RefreshEntity refreshEntity = new RefreshEntity(refresh, username);
+        refreshRedisRepository.save(refreshEntity);
     }
 }

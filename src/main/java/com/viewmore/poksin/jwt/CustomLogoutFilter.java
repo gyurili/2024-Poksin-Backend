@@ -2,10 +2,9 @@ package com.viewmore.poksin.jwt;
 
 import com.viewmore.poksin.code.ErrorCode;
 import com.viewmore.poksin.code.SuccessCode;
-import com.viewmore.poksin.dto.response.ErrorResponseDTO;
 import com.viewmore.poksin.dto.response.ResponseDTO;
 import com.viewmore.poksin.entity.RefreshEntity;
-import com.viewmore.poksin.repository.RefreshRepository;
+import com.viewmore.poksin.repository.RefreshRedisRepository;
 import com.viewmore.poksin.util.TokenErrorResponse;
 import jakarta.servlet.ServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +25,8 @@ import java.util.Optional;
 public class CustomLogoutFilter extends GenericFilterBean {
 
     private final JWTUtil jwtUtil;
-
-    private final RefreshRepository refreshRedisRepository;
-
+    private final RefreshRedisRepository refreshRedisRepository;
+  
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         doFilter((HttpServletRequest) request, (HttpServletResponse) response, chain);
@@ -91,3 +89,4 @@ public class CustomLogoutFilter extends GenericFilterBean {
     }
 
 }
+

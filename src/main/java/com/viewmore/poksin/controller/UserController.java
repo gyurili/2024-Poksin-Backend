@@ -3,6 +3,7 @@ package com.viewmore.poksin.controller;
 import com.viewmore.poksin.code.SuccessCode;
 import com.viewmore.poksin.dto.user.*;
 import com.viewmore.poksin.dto.response.ResponseDTO;
+import com.viewmore.poksin.repository.RefreshRedisRepository;
 import com.viewmore.poksin.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
