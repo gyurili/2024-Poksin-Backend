@@ -23,7 +23,6 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final JWTUtil jwtUtil;
 
     @PostMapping("/register")
     public ResponseEntity<ResponseDTO> registerUser(@RequestBody RegisterDTO registerDTO) {
