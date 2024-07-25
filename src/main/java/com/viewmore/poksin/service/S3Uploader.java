@@ -2,14 +2,13 @@ package com.viewmore.poksin.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -26,6 +25,7 @@ public class S3Uploader {
         this.amazonS3 = amazonS3;
         this.bucket = bucket;
     }
+
     public String upload(MultipartFile multipartFile, String dirName) throws IOException {
         // 파일 이름에서 공백을 제거한 새로운 파일 이름 생성
         String originalFileName = multipartFile.getOriginalFilename();
@@ -37,32 +37,18 @@ public class S3Uploader {
 
         String fileName = dirName + "/" + uuid;
         log.info("fileName: " + fileName);
-        File uploadFile = convert(multipartFile);
 
-        String uploadImageUrl = putS3(uploadFile, fileName);
+        // S3에 파일 업로드
+        String uploadImageUrl = putS3(multipartFile, fileName);
         return uploadImageUrl;
     }
 
-    private File convert(MultipartFile file) throws IOException {
-        String originalFileName = file.getOriginalFilename();
-        String uuid = UUID.randomUUID().toString();
-        String uniqueFileName = uuid + "_" + originalFileName.replaceAll("\\s", "_");
+    private String putS3(MultipartFile multipartFile, String fileName) throws IOException {
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(multipartFile.getSize());
+        metadata.setContentType(multipartFile.getContentType());
 
-        File convertFile = new File(uniqueFileName);
-        if (convertFile.createNewFile()) {
-            try (FileOutputStream fos = new FileOutputStream(convertFile)) {
-                fos.write(file.getBytes());
-            } catch (IOException e) {
-                log.error("파일 변환 중 오류 발생: {}", e.getMessage());
-                throw e;
-            }
-            return convertFile;
-        }
-        throw new IllegalArgumentException(String.format("파일 변환에 실패했습니다. %s", originalFileName));
-    }
-
-    private String putS3(File uploadFile, String fileName) {
-        amazonS3.putObject(new PutObjectRequest(bucket, fileName, uploadFile)
+        amazonS3.putObject(new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(), metadata)
                 .withCannedAcl(CannedAccessControlList.PublicRead));
         return amazonS3.getUrl(bucket, fileName).toString();
     }
