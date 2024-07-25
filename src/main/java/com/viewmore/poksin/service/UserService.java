@@ -1,7 +1,6 @@
 package com.viewmore.poksin.service;
 
 import com.viewmore.poksin.dto.user.*;
-import com.viewmore.poksin.entity.CounselorEntity;
 import com.viewmore.poksin.entity.UserEntity;
 import com.viewmore.poksin.exception.DuplicateUsernameException;
 import com.viewmore.poksin.repository.CounselorRepository;

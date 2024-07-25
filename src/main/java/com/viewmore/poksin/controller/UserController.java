@@ -1,22 +1,13 @@
 package com.viewmore.poksin.controller;
 
-import com.viewmore.poksin.code.ErrorCode;
 import com.viewmore.poksin.code.SuccessCode;
 import com.viewmore.poksin.dto.user.*;
-import com.viewmore.poksin.jwt.JWTUtil;
 import com.viewmore.poksin.dto.response.ResponseDTO;
 import com.viewmore.poksin.service.UserService;
-import com.viewmore.poksin.util.TokenErrorResponse;
-import io.jsonwebtoken.ExpiredJwtException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
 
 @RestController
 @RequestMapping("/user")

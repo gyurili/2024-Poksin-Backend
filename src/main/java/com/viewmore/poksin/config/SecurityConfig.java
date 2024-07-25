@@ -1,5 +1,6 @@
 package com.viewmore.poksin.config;
 
+import com.viewmore.poksin.jwt.CustomLogoutFilter;
 import com.viewmore.poksin.jwt.JWTUtil;
 import com.viewmore.poksin.jwt.LoginFilter;
 import com.viewmore.poksin.repository.RefreshRepository;
@@ -15,6 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -74,6 +76,9 @@ public class SecurityConfig {
         http
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        http
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil, redisRepository), LogoutFilter.class);
 
         return http.build();
     }
