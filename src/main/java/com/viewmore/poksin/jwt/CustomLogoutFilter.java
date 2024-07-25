@@ -25,9 +25,8 @@ import java.util.Optional;
 public class CustomLogoutFilter extends GenericFilterBean {
 
     private final JWTUtil jwtUtil;
-
     private final RefreshRedisRepository refreshRedisRepository;
-
+  
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         doFilter((HttpServletRequest) request, (HttpServletResponse) response, chain);
@@ -90,3 +89,4 @@ public class CustomLogoutFilter extends GenericFilterBean {
     }
 
 }
+

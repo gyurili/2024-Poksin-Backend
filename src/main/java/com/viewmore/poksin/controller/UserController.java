@@ -1,30 +1,20 @@
 package com.viewmore.poksin.controller;
 
-import com.viewmore.poksin.code.ErrorCode;
 import com.viewmore.poksin.code.SuccessCode;
 import com.viewmore.poksin.dto.user.*;
-import com.viewmore.poksin.jwt.JWTUtil;
 import com.viewmore.poksin.dto.response.ResponseDTO;
 import com.viewmore.poksin.repository.RefreshRedisRepository;
 import com.viewmore.poksin.service.UserService;
-import com.viewmore.poksin.util.TokenErrorResponse;
-import io.jsonwebtoken.ExpiredJwtException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
 
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final JWTUtil jwtUtil;
 
     @PostMapping("/register")
     public ResponseEntity<ResponseDTO> registerUser(@RequestBody RegisterDTO registerDTO) {

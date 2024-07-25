@@ -30,12 +30,14 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final JWTUtil jwtUtil;
     private final RefreshRedisRepository refreshRedisRepository;
 
+
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
         String username = obtainUsername(request);
         String password = obtainPassword(request);
 
+        // 추후 삭제 필요, 확인 용
         System.out.println(username);
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
@@ -61,6 +63,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String refreshToken = jwtUtil.createJwt("refreshToken", username, role, 86400000L);
 
         addRefreshEntity(refreshToken, username);
+
 
         response.addHeader("accessToken", "Bearer " + accesstoken);
         response.addHeader("refreshToken", "Bearer " + refreshToken);

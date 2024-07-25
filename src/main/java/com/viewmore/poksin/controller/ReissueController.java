@@ -29,6 +29,7 @@ public class ReissueController {
     private final RefreshRedisRepository refreshRedisRepository;
 
 
+
     @PostMapping()
     public ResponseEntity<ResponseDTO> reissue(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // 헤더에서 refresh키에 담긴 토큰을 꺼냄
@@ -51,6 +52,7 @@ public class ReissueController {
 
         // DB에 저장되어 있는지 확인
         Optional<RefreshEntity> isExist = refreshRedisRepository.findById(refreshToken);
+
         if (isExist.isEmpty()) {
             TokenErrorResponse.sendErrorResponse(response, ErrorCode.TOKEN_EXPIRED);
         }
@@ -64,6 +66,7 @@ public class ReissueController {
 
         refreshRedisRepository.deleteById(refreshToken);
         addRefreshEntity(newRefreshToken, username);
+
 
         response.setHeader("accessToken", "Bearer " + newAccessToken);
         response.setHeader("refreshToken", "Bearer " + newRefreshToken);

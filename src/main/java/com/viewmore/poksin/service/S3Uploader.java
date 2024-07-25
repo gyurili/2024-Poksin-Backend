@@ -32,9 +32,10 @@ public class S3Uploader {
 
         // UUID를 파일명에 추가
         String uuid = UUID.randomUUID().toString();
-        String uniqueFileName = uuid + "_" + originalFileName.replaceAll("\\s", "_");
 
-        String fileName = dirName + "/" + uniqueFileName;
+        //String uniqueFileName = uuid + "_" + originalFileName.replaceAll("\\s", "_");
+
+        String fileName = dirName + "/" + uuid;
         log.info("fileName: " + fileName);
 
         // S3에 파일 업로드

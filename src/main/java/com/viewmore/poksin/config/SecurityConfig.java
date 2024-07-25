@@ -1,5 +1,6 @@
 package com.viewmore.poksin.config;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.viewmore.poksin.jwt.CustomLogoutFilter;
@@ -29,6 +30,7 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
     private final RefreshRedisRepository refreshRedisRepository;
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -80,10 +82,14 @@ public class SecurityConfig {
         http
                 .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRedisRepository), LogoutFilter.class);
 
+
         //세션 설정
         http
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        http
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil, redisRepository), LogoutFilter.class);
 
         return http.build();
     }

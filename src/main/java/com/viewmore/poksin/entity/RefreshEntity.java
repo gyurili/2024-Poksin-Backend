@@ -5,7 +5,7 @@ import lombok.Getter;
 import org.springframework.data.redis.core.RedisHash;
 
 @Getter
-@RedisHash(value = "refresh", timeToLive = 86400)  // 만료 시간 24시간
+@RedisHash(value = "refresh", timeToLive = 86400) 
 public class RefreshEntity {
 
     @Id
@@ -17,4 +17,5 @@ public class RefreshEntity {
         this.username = username;
         this.refresh = refresh;
     }
+
 }
