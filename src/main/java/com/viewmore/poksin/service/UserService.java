@@ -48,7 +48,7 @@ public class UserService {
                 .phoneOpen(registerDTO.getphoneOpen())
                 .emergencyOpen(registerDTO.getEmergencyOpen())
                 .addressOpen(registerDTO.getAddressOpen())
-                .role("USER")
+                .role("ROLE_USER")
                 .build();
 
         userRepository.save(user);

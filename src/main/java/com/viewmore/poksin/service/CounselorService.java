@@ -49,7 +49,7 @@ public class CounselorService {
                 .specialty(counselorRegisterDTO.getSpecialty())
                 .count(0)
                 .career(counselorRegisterDTO.getCareer())
-                .role("ADMIN")
+                .role("ROLE_ADMIN")
                 .build();
 
         counselorRepository.save(user);
