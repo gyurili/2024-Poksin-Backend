@@ -10,7 +10,7 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 @EnableRedisRepositories
 public class PoksinApplication {
 
-	public static void main(String[] args) {
+public static void main(String[] args) {
 		SpringApplication.run(PoksinApplication.class, args);
 	}
 
