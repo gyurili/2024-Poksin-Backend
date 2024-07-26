@@ -7,11 +7,11 @@ import com.viewmore.poksin.dto.evidence.MonthEvidenceResponseDTO;
 import com.viewmore.poksin.entity.*;
 import com.viewmore.poksin.exception.CategoryNotFoundException;
 import com.viewmore.poksin.exception.EvidenceNotFoundException;
-// import com.viewmore.poksin.exception.ViolenceSegmentNotFoundException;
+import com.viewmore.poksin.exception.ViolenceSegmentNotFoundException;
 import com.viewmore.poksin.repository.CategoryRepository;
 import com.viewmore.poksin.repository.EvidenceRepository;
 import com.viewmore.poksin.repository.UserRepository;
-// import com.viewmore.poksin.repository.ViolenceSegmentRepository;
+import com.viewmore.poksin.repository.ViolenceSegmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -37,7 +37,7 @@ public class EvidenceService {
     private final CategoryRepository categoryRepository;
     private final S3Uploader s3Uploader;
     private final RestTemplate restTemplate;  // RestTemplate 주입
-    // private final ViolenceSegmentRepository violenceSegmentRepository;
+    private final ViolenceSegmentRepository violenceSegmentRepository;
     private final String FASTAPI_URL = "http://localhost:8000/detect-violence/";
 
     public EvidenceDetailResponseDTO updateFile(String username, CreateEvidenceDTO createEvidenceDTO, List<MultipartFile> fileUrls) throws IOException {
@@ -138,7 +138,27 @@ public class EvidenceService {
         List<EvidenceDetailResponseDTO> evidenceResponseDTOS = new ArrayList<>();
         evidenceEntityList.forEach(entity -> {
             try {
-                evidenceResponseDTOS.add(EvidenceDetailResponseDTO.toDto(entity));
+                EvidenceDetailResponseDTO evidenceDetailResponseDTO = EvidenceDetailResponseDTO.toDto(entity);
+                if (entity.getCategory().getName() == CategoryTypeEnum.VIDEO) {
+                    evidenceDetailResponseDTO.setDetection("영상에서 폭력 발생 검출 중입니다. 잠시만 기다려주세요.");
+
+                    if (entity.isDone()) {
+                        Integer times = violenceSegmentRepository.countAllByEvidence_Id(entity.getId());
+                        Float duration = violenceSegmentRepository.sumDurationByEvidence_Id(entity.getId());
+
+                        // null 값을 0으로 변환
+                        times = (times == null) ? 0 : times;
+                        duration = (duration == null) ? 0.0f : duration;
+
+                        String message = String.format("폭력 발생 횟수는 %d회, 폭력 지속 시간 %.2f초.", times, duration);
+
+                        System.out.println(message);
+
+                        evidenceDetailResponseDTO.setDetection(message);
+                    }
+
+                }
+                evidenceResponseDTOS.add(evidenceDetailResponseDTO);
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
@@ -170,12 +190,9 @@ public class EvidenceService {
     }
 
 
-    /*
     public List<EvidenceDetailResponseDTO.EvidenceVideoResponseDTO> detailVideoEvidence(Integer id) {
-
         List<ViolenceSegmentEntity> violenceSegmentEntities = violenceSegmentRepository.findAllByEvidence_Id(id)
                 .orElseThrow(() -> new ViolenceSegmentNotFoundException("폭행 장면이 검출되지 않았습니다."));
         return violenceSegmentEntities.stream().map(EvidenceDetailResponseDTO.EvidenceVideoResponseDTO::toDto).toList();
     }
-    */
 }
