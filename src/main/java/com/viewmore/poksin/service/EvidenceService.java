@@ -140,18 +140,23 @@ public class EvidenceService {
             try {
                 EvidenceDetailResponseDTO evidenceDetailResponseDTO = EvidenceDetailResponseDTO.toDto(entity);
                 if (entity.getCategory().getName() == CategoryTypeEnum.VIDEO) {
-                    Integer times = violenceSegmentRepository.countAllByEvidence_Id(entity.getId());
-                    Float duration = violenceSegmentRepository.sumDurationByEvidence_Id(entity.getId());
+                    evidenceDetailResponseDTO.setDetection("영상에서 폭력 발생 검출 중입니다. 잠시만 기다려주세요.");
 
-                    // null 값을 0으로 변환
-                    times = (times == null) ? 0 : times;
-                    duration = (duration == null) ? 0.0f : duration;
+                    if (entity.isDone()) {
+                        Integer times = violenceSegmentRepository.countAllByEvidence_Id(entity.getId());
+                        Float duration = violenceSegmentRepository.sumDurationByEvidence_Id(entity.getId());
 
-                    String message = String.format("폭력 발생 횟수는 %d회, 폭력 지속 시간 %.2f초.", times, duration);
+                        // null 값을 0으로 변환
+                        times = (times == null) ? 0 : times;
+                        duration = (duration == null) ? 0.0f : duration;
 
-                    System.out.println(message);
+                        String message = String.format("폭력 발생 횟수는 %d회, 폭력 지속 시간 %.2f초.", times, duration);
 
-                    evidenceDetailResponseDTO.setDescription(message);
+                        System.out.println(message);
+
+                        evidenceDetailResponseDTO.setDetection(message);
+                    }
+
                 }
                 evidenceResponseDTOS.add(evidenceDetailResponseDTO);
             } catch (JsonProcessingException e) {
