@@ -9,7 +9,6 @@ import com.viewmore.poksin.entity.RefreshEntity;
 import com.viewmore.poksin.jwt.JWTUtil;
 import com.viewmore.poksin.repository.RefreshRedisRepository;
 import com.viewmore.poksin.service.UserService;
-import com.viewmore.poksin.util.TokenErrorResponse;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,9 +16,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/user")
@@ -53,6 +53,14 @@ public class UserController {
         return ResponseEntity
                 .status(SuccessCode.SUCCESS_UPDATE_USER.getStatus().value())
                 .body(new ResponseDTO<>(SuccessCode.SUCCESS_UPDATE_USER, response));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<ResponseDTO> getAllUsers() {
+        List<UserResponseDTO> users = userService.findAllUsers();
+        return ResponseEntity
+                .status(SuccessCode.SUCCESS_RETRIEVE_USER.getStatus().value())
+                .body(new ResponseDTO<>(SuccessCode.SUCCESS_RETRIEVE_USER, users));
     }
 
     @DeleteMapping("/delete")

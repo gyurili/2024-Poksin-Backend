@@ -34,54 +34,45 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-
         return configuration.getAuthenticationManager();
     }
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
-
         return new BCryptPasswordEncoder();
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        //csrf disable
-        http
-                .csrf(AbstractHttpConfigurer::disable);
+        http.csrf(AbstractHttpConfigurer::disable);
 
-        //From 로그인 방식 disable
-        http
-                .formLogin(AbstractHttpConfigurer::disable);
+        http.formLogin(AbstractHttpConfigurer::disable);
 
-        //http basic 인증 방식 disable
-        http
-                .httpBasic(AbstractHttpConfigurer::disable);
+        http.httpBasic(AbstractHttpConfigurer::disable);
 
+        http.authorizeHttpRequests((auth) -> auth
+                .requestMatchers(
+                        "/login",
+                        "/error",
+                        "/user/register",
+                        "/counselor/register",
+                        "/reissue",
+                        "/swagger-ui/**",
+                        "/swagger-resources/**",
+                        "/v3/api-docs/**",
+                        "/chat/**"
+                ).permitAll()
+                .anyRequest().authenticated());
 
-        http
-                .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers(
-                                "/login",
-                                "/error",
-                                "/user/register",
-                                "/counselor/register",
-                                "/reissue",
-                                "/swagger-ui/**",
-                                "/swagger-resources/**",
-                                "/v3/api-docs/**"
-                        ).permitAll()
-                        .anyRequest().authenticated());
+        http.
+                addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
 
-        http
-                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
         http
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRedisRepository), UsernamePasswordAuthenticationFilter.class);
 
         http
                 .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRedisRepository), LogoutFilter.class);
-
 
         //세션 설정
         http

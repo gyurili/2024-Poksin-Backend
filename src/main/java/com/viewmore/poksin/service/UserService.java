@@ -12,30 +12,22 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    @Autowired
     private final UserRepository userRepository;
-    @Autowired
     private final CounselorRepository counselorRepository;
-
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    public void register(RegisterDTO registerDTO) {
 
+    public void register(RegisterDTO registerDTO) {
         String username = registerDTO.getUsername();
         String password = registerDTO.getPassword();
 
         // 상담사, 일반 유저 아이디 중복 검사
-        Boolean isExist = userRepository.existsByUsername(username);
-
-        if (isExist) {
-            throw new DuplicateUsernameException("중복된 아이디가 존재합니다.");
-        }
-
-        isExist = counselorRepository.existsByUsername(username);
-
-        if (isExist) {
+        if (userRepository.existsByUsername(username) || counselorRepository.existsByUsername(username)) {
             throw new DuplicateUsernameException("중복된 아이디가 존재합니다.");
         }
 
@@ -76,5 +68,11 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("해당 사용자 이름을 가진 사용자를 찾을 수 없습니다: " + username));
 
         userRepository.delete(user);
+    }
+
+    public List<UserResponseDTO> findAllUsers() {
+        return userRepository.findAll().stream()
+                .map(UserResponseDTO::toDto)
+                .collect(Collectors.toList());
     }
 }
