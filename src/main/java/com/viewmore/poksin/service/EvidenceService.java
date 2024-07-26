@@ -7,11 +7,10 @@ import com.viewmore.poksin.dto.evidence.MonthEvidenceResponseDTO;
 import com.viewmore.poksin.entity.*;
 import com.viewmore.poksin.exception.CategoryNotFoundException;
 import com.viewmore.poksin.exception.EvidenceNotFoundException;
-// import com.viewmore.poksin.exception.ViolenceSegmentNotFoundException;
+import com.viewmore.poksin.exception.ViolenceSegmentNotFoundException;
 import com.viewmore.poksin.repository.CategoryRepository;
 import com.viewmore.poksin.repository.EvidenceRepository;
 import com.viewmore.poksin.repository.UserRepository;
-// import com.viewmore.poksin.repository.ViolenceSegmentRepository;
 import com.viewmore.poksin.repository.ViolenceSegmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -191,12 +190,9 @@ public class EvidenceService {
     }
 
 
-    /*
     public List<EvidenceDetailResponseDTO.EvidenceVideoResponseDTO> detailVideoEvidence(Integer id) {
-
         List<ViolenceSegmentEntity> violenceSegmentEntities = violenceSegmentRepository.findAllByEvidence_Id(id)
                 .orElseThrow(() -> new ViolenceSegmentNotFoundException("폭행 장면이 검출되지 않았습니다."));
         return violenceSegmentEntities.stream().map(EvidenceDetailResponseDTO.EvidenceVideoResponseDTO::toDto).toList();
     }
-    */
 }
