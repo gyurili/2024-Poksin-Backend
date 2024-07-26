@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.List;
 
@@ -26,6 +27,10 @@ public class EvidenceEntity extends BaseEntity{
     @Lob
     @Column(columnDefinition = "LONGTEXT")
     private String fileUrls;
+
+    @ColumnDefault("false")
+    private boolean done;
+
 
     public void setFileUrls(List<String> fileUrls) throws JsonProcessingException {
         // JSON 문자열로 변환

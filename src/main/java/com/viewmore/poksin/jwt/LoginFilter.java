@@ -6,6 +6,8 @@ import com.viewmore.poksin.code.SuccessCode;
 import com.viewmore.poksin.dto.user.CustomUserDetails;
 import com.viewmore.poksin.dto.response.ErrorResponseDTO;
 import com.viewmore.poksin.dto.response.ResponseDTO;
+import com.viewmore.poksin.entity.RefreshEntity;
+import com.viewmore.poksin.repository.RefreshRedisRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,6 +28,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
+    private final RefreshRedisRepository refreshRedisRepository;
+
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -33,6 +37,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String username = obtainUsername(request);
         String password = obtainPassword(request);
 
+        // 추후 삭제 필요, 확인 용
         System.out.println(username);
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
@@ -57,6 +62,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String accesstoken = jwtUtil.createJwt("accessToken", username, role, 86400000L);
         String refreshToken = jwtUtil.createJwt("refreshToken", username, role, 86400000L);
 
+        addRefreshEntity(refreshToken, username);
+
+
         response.addHeader("accessToken", "Bearer " + accesstoken);
         response.addHeader("refreshToken", "Bearer " + refreshToken);
 
@@ -67,6 +75,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String jsonResponse = objectMapper.writeValueAsString(responseDTO);
         response.getWriter().write(jsonResponse);
 
+    }
+
+    private void addRefreshEntity(String refresh, String username) {
+        RefreshEntity refreshEntity = new RefreshEntity(refresh, username);
+        refreshRedisRepository.save(refreshEntity);
     }
 
     @Override

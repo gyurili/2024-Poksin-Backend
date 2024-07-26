@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,6 +21,10 @@ public class EvidenceDetailResponseDTO {
     private CategoryTypeEnum category;
     // 자료 제목
     private String title;
+    // 영상 검출 부분
+    private String detection;
+    // 영상 검출 완료
+    private boolean done;
     // 자료 상세 설명
     private String description;
     // 자료와 함께 첨부하는 파일 (url)
@@ -31,6 +36,7 @@ public class EvidenceDetailResponseDTO {
         return builder()
                 .id(entity.getId())
                 .category(entity.getCategory().getName())
+                .done(entity.isDone())
                 .title(entity.getTitle())
                 .description(entity.getDescription())
                 .fileUrls(entity.getFileUrls())
@@ -42,6 +48,7 @@ public class EvidenceDetailResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     @Data
+    //검출 비디오
     public static class EvidenceVideoResponseDTO {
         private int id;
         // 자료 원본

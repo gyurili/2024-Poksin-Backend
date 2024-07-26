@@ -99,26 +99,6 @@ public class EvidenceService {
         } catch (Exception e) {
             System.err.println("Exception occurred while sending request to FastAPI: " + e.getMessage());
         }
-
-        EvidenceEntity evidenceEntity = evidenceRepository.findById(evidenceId).orElseThrow(() -> new EvidenceNotFoundException("증거를 찾을 수 없습니다."));
-
-        if (evidenceEntity.getCategory().getName() == CategoryTypeEnum.VIDEO) {
-            Integer times = violenceSegmentRepository.countAllByEvidence_Id(evidenceEntity.getId());
-            Float duration = violenceSegmentRepository.sumDurationByEvidence_Id(evidenceEntity.getId());
-
-            // null 값을 0으로 변환
-            times = (times == null) ? 0 : times;
-            duration = (duration == null) ? 0.0f : duration;
-
-            String message = String.format("현재 영상에서의 폭력 발생 횟수는 %d회이며, 총 폭력 지속 시간은 %.2f초입니다.", times, duration);
-
-            System.out.println(message);
-
-            String updatedDescription = message + "\n" + evidenceEntity.getDescription();
-            evidenceEntity.setDescription(updatedDescription);
-
-            evidenceRepository.save(evidenceEntity);
-        }
     }
     public List<MonthEvidenceResponseDTO> findAllByMonth(String username, String year, String month) {
         UserEntity user = userRepository.findByUsername(username)
@@ -158,7 +138,22 @@ public class EvidenceService {
         List<EvidenceDetailResponseDTO> evidenceResponseDTOS = new ArrayList<>();
         evidenceEntityList.forEach(entity -> {
             try {
-                evidenceResponseDTOS.add(EvidenceDetailResponseDTO.toDto(entity));
+                EvidenceDetailResponseDTO evidenceDetailResponseDTO = EvidenceDetailResponseDTO.toDto(entity);
+                if (entity.getCategory().getName() == CategoryTypeEnum.VIDEO) {
+                    Integer times = violenceSegmentRepository.countAllByEvidence_Id(entity.getId());
+                    Float duration = violenceSegmentRepository.sumDurationByEvidence_Id(entity.getId());
+
+                    // null 값을 0으로 변환
+                    times = (times == null) ? 0 : times;
+                    duration = (duration == null) ? 0.0f : duration;
+
+                    String message = String.format("폭력 발생 횟수는 %d회, 폭력 지속 시간 %.2f초.", times, duration);
+
+                    System.out.println(message);
+
+                    evidenceDetailResponseDTO.setDescription(message);
+                }
+                evidenceResponseDTOS.add(evidenceDetailResponseDTO);
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }

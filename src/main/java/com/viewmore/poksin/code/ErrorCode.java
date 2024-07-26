@@ -26,6 +26,7 @@ public enum ErrorCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "카테고리를 찾을 수 없습니다."),
     EVIDENCE_NOT_FOUND(HttpStatus.NOT_FOUND, "증거를 찾을 수 없습니다."),
+    TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "데이터베이스에서 토큰을 찾을 수 없습니다."),
     EVIDENCE_VIDEO_NOT_FOUND(HttpStatus.NOT_FOUND, "증거 영상에 폭력이 검출되지 않았거나, 찾을 수 없습니다."),
 
     /**
