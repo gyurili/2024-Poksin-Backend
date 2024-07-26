@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EvidenceResponseDTO {
+public class EvidenceDetailResponseDTO {
     // id
     private int id;
     // 카테고리
@@ -29,7 +29,7 @@ public class EvidenceResponseDTO {
     // 생성일
     private LocalDateTime created_at;
 
-    public static EvidenceResponseDTO toDto(EvidenceEntity entity) throws JsonProcessingException {
+    public static EvidenceDetailResponseDTO toDto(EvidenceEntity entity) throws JsonProcessingException {
         return builder()
                 .id(entity.getId())
                 .category(entity.getCategory().getName())

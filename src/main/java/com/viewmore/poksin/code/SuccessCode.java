@@ -17,12 +17,15 @@ public enum SuccessCode {
     SUCCESS_REISSUE(HttpStatus.OK, "토큰 재발급을 성공했습니다."),
     SUCCESS_UPDATE_USER(HttpStatus.OK, "유저 정보를 성공적으로 수정했습니다."),
     SUCCESS_RETRIEVE_ALL_USERS(HttpStatus.OK, "모든 사용자를 성공적으로 조회했습니다."),
+    SUCCESS_LOGOUT(HttpStatus.OK, "성공적으로 로그아웃했습니다."),
+    SUCCESS_DELETE_USER(HttpStatus.OK, "유저가 성공적으로 삭제되었습니다."),
 
     /**
      * Evidence
      */
     SUCCESS_CREATE_EVIDENCE(HttpStatus.CREATED, "증거가 성공적으로 생성되었습니다."),
-    SUCCESS_RETRIEVE_EVIDENCE(HttpStatus.OK, "증거를 성공적으로 조회했습니다."),
+    SUCCESS_RETRIEVE_MONTH_EVIDENCE(HttpStatus.OK, "월별 증거를 성공적으로 조회했습니다."),
+    SUCCESS_RETRIEVE_DAY_EVIDENCE(HttpStatus.OK, "일별 증거를 성공적으로 조회했습니다."),
     SUCCESS_DELETE_EVIDENCE(HttpStatus.OK, "증거를 성공적으로 삭제했습니다."),
     ;
 
