@@ -27,8 +27,16 @@ public enum SuccessCode {
     SUCCESS_RETRIEVE_MONTH_EVIDENCE(HttpStatus.OK, "월별 증거를 성공적으로 조회했습니다."),
     SUCCESS_RETRIEVE_DAY_EVIDENCE(HttpStatus.OK, "일별 증거를 성공적으로 조회했습니다."),
     SUCCESS_DELETE_EVIDENCE(HttpStatus.OK, "증거를 성공적으로 삭제했습니다."),
-    ;
 
+
+    /**
+     * Chat
+     */
+    SUCCESS_EXIST_CHATROOM(HttpStatus.OK, "이미 해당 username으로 채팅방이 존재합니다."),
+    SUCCESS_CREATE_CHATROOM(HttpStatus.CREATED, "채팅방이 성공적으로 생성되었습니다."),
+    SUCCESS_FIND_CHATROOM(HttpStatus.OK, "모든 채팅방을 조회했습니다."),
+
+    ;
     private final HttpStatus status;
     private final String message;
 }
