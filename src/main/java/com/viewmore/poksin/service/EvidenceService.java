@@ -12,6 +12,7 @@ import com.viewmore.poksin.repository.CategoryRepository;
 import com.viewmore.poksin.repository.EvidenceRepository;
 import com.viewmore.poksin.repository.UserRepository;
 // import com.viewmore.poksin.repository.ViolenceSegmentRepository;
+import com.viewmore.poksin.repository.ViolenceSegmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -37,7 +38,7 @@ public class EvidenceService {
     private final CategoryRepository categoryRepository;
     private final S3Uploader s3Uploader;
     private final RestTemplate restTemplate;  // RestTemplate 주입
-    // private final ViolenceSegmentRepository violenceSegmentRepository;
+    private final ViolenceSegmentRepository violenceSegmentRepository;
     private final String FASTAPI_URL = "http://localhost:8000/detect-violence/";
 
     public EvidenceDetailResponseDTO updateFile(String username, CreateEvidenceDTO createEvidenceDTO, List<MultipartFile> fileUrls) throws IOException {
