@@ -34,21 +34,19 @@ public class ChatRoomEntity {
     private Set<String> sessionIds = new HashSet<>();
 
     @Setter
-    private String lastMessage;
+    private String lastMessage; // 가장 최근에 보낸 메시지
 
     @Setter
     @Builder.Default
-    private LocalDateTime lastUpdated = LocalDateTime.now();
+    private LocalDateTime lastUpdated = LocalDateTime.now(); // 가장 최근 메시지를 보낸 시간
 
-    public void handleActions(WebSocketSession session, ChatMessageEntity chatMessage, ChatService chatService) {
-        if (chatMessage.getType().equals(ChatMessageEntity.MessageType.ENTER)) {
-            sessionIds.add(session.getId());
-            chatMessage.setMessage(chatMessage.getSender() + "님이 입장했습니다.");
-        }
-        setLastMessage(chatMessage.getMessage());
-        setLastUpdated(LocalDateTime.now());
-        sendMessage(chatMessage, chatService);
-    }
+    private boolean isBlocked; // 방 차단 상태
+
+    @Setter
+    private boolean isConsultationActive; // 상담 활성화 상태
+
+    @Setter
+    private String admin; // 채팅방 관리자
 
     public <T> void sendMessage(T message, ChatService chatService) {
         sessionIds.forEach(sessionId -> {
@@ -61,10 +59,5 @@ public class ChatRoomEntity {
                 }
             }
         });
-    }
-
-    public void removeSession(String sessionId) {
-        sessionIds.remove(sessionId);
-        SessionManager.removeSession(sessionId);
     }
 }

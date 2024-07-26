@@ -22,7 +22,10 @@ public class ChatMessageEntity {
     private String message;
     private LocalDateTime timestamp;
 
+    private String fileUrl;
+    private String fileName;
+
     public enum MessageType {
-        ENTER, TALK, PRIVATE
+        ENTER, TALK, PRIVATE, FILE
     }
 }
