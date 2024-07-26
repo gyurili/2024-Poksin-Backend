@@ -42,23 +42,18 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
-
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-
         String username = customUserDetails.getUsername();
-
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
-
         String role = auth.getAuthority();
 
-
-        String accesstoken = jwtUtil.createJwt("accessToken", username, role, 86400000L);
+        String accessToken = jwtUtil.createJwt("accessToken", username, role, 86400000L);
         String refreshToken = jwtUtil.createJwt("refreshToken", username, role, 86400000L);
 
-        response.addHeader("accessToken", "Bearer " + accesstoken);
-        response.addHeader("refreshToken", "Bearer " + refreshToken);
+        response.setHeader("accessToken", "Bearer " + accessToken);
+        response.setHeader("refreshToken", "Bearer " + refreshToken);
 
         ResponseDTO responseDTO = new ResponseDTO<>(SuccessCode.SUCCESS_LOGIN, null);
         response.setContentType("application/json");
@@ -66,8 +61,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonResponse = objectMapper.writeValueAsString(responseDTO);
         response.getWriter().write(jsonResponse);
-
     }
+
+
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {

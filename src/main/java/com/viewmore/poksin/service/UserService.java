@@ -7,36 +7,27 @@ import com.viewmore.poksin.exception.DuplicateUsernameException;
 import com.viewmore.poksin.repository.CounselorRepository;
 import com.viewmore.poksin.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    @Autowired
     private final UserRepository userRepository;
-    @Autowired
     private final CounselorRepository counselorRepository;
-
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    public void register(RegisterDTO registerDTO) {
 
+    public void register(RegisterDTO registerDTO) {
         String username = registerDTO.getUsername();
         String password = registerDTO.getPassword();
 
         // 상담사, 일반 유저 아이디 중복 검사
-        Boolean isExist = userRepository.existsByUsername(username);
-
-        if (isExist) {
-            throw new DuplicateUsernameException("중복된 아이디가 존재합니다.");
-        }
-
-        isExist = counselorRepository.existsByUsername(username);
-
-        if (isExist) {
+        if (userRepository.existsByUsername(username) || counselorRepository.existsByUsername(username)) {
             throw new DuplicateUsernameException("중복된 아이디가 존재합니다.");
         }
 
@@ -70,5 +61,11 @@ public class UserService {
         user.updateUser(updateUserDTO);
 
         return UserResponseDTO.toDto(user);
+    }
+
+    public List<UserResponseDTO> findAllUsers() {
+        return userRepository.findAll().stream()
+                .map(UserResponseDTO::toDto) // UserEntity를 UserResponseDTO로 변환
+                .collect(Collectors.toList());
     }
 }

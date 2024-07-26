@@ -27,7 +27,6 @@ public class UserResponseDTO {
     private LocalDateTime createdAt;
 
     public static UserResponseDTO toDto(UserEntity entity) {
-
         return UserResponseDTO.builder()
                 .username(entity.getUsername())
                 .phoneNum(entity.getphoneOpen() ? entity.getPhoneNum() : null)
@@ -37,5 +36,4 @@ public class UserResponseDTO {
                 .createdAt(entity.getCreatedAt())
                 .build();
     }
-
 }
