@@ -28,7 +28,7 @@ public class S3Uploader {
 
     public String upload(MultipartFile multipartFile, String dirName) throws IOException {
         // 파일 이름에서 공백을 제거한 새로운 파일 이름 생성
-        String originalFileName = multipartFile.getOriginalFilename();
+        //String originalFileName = multipartFile.getOriginalFilename();
 
         // UUID를 파일명에 추가
         String uuid = UUID.randomUUID().toString();
@@ -37,10 +37,8 @@ public class S3Uploader {
 
         String fileName = dirName + "/" + uuid;
         log.info("fileName: " + fileName);
-
         // S3에 파일 업로드
-        String uploadImageUrl = putS3(multipartFile, fileName);
-        return uploadImageUrl;
+        return putS3(multipartFile, fileName);
     }
 
     private String putS3(MultipartFile multipartFile, String fileName) throws IOException {
