@@ -1,6 +1,6 @@
 ---
 name: Issue Template
-about: 2024 멋쟁이사자처럼 중앙 해커톤 백엔드 이슈 템플릿입니다.
+about: 2024 멋쟁이사자처럼 중앙 해커톤 백엔드 이슈 템플릿입니다!
 title: ''
 labels: ''
 assignees: ''
