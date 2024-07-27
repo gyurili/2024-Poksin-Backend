@@ -5,15 +5,25 @@ import com.viewmore.poksin.entity.ChatMessageEntity;
 import com.viewmore.poksin.entity.ChatRoomEntity;
 import com.viewmore.poksin.repository.ChatMessageRepository;
 import com.viewmore.poksin.repository.ChatRoomRepository;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,6 +33,10 @@ public class ChatService {
     private final ObjectMapper objectMapper;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final AmazonS3 s3Client;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucketName;
 
     public List<ChatRoomEntity> findAllRoom() {
         return chatRoomRepository.findAll();
@@ -45,6 +59,11 @@ public class ChatService {
         return chatRoomRepository.save(chatRoom);
     }
 
+    @Transactional
+    public ChatMessageEntity saveChatMessage(ChatMessageEntity message) {
+        return chatMessageRepository.save(message);
+    }
+
     public <T> void sendMessage(WebSocketSession session, T message) {
         if (session != null && session.isOpen()) {
             try {
@@ -54,13 +73,6 @@ public class ChatService {
             }
         } else {
             log.warn("Session is null or closed, cannot send message.");
-        }
-    }
-
-    public void removeSession(String roomId, String sessionId) {
-        ChatRoomEntity chatRoom = findRoomById(roomId);
-        if (chatRoom != null) {
-            chatRoom.removeSession(sessionId);
         }
     }
 
@@ -85,5 +97,52 @@ public class ChatService {
         return chatMessageRepository.findByRoomId(roomId);
     }
 
+    // 상담 종료 + 차단
+    public void closeRoom(String roomId) {
+        ChatRoomEntity room = findRoomById(roomId);
+        if (room != null) {
+            room.setConsultationActive(false);
+            room.setBlocked(true);
+            chatRoomRepository.save(room);
+        }
+    }
+
+    // 상담 재개 + 활성화
+    public void openRoom(String roomId) {
+        ChatRoomEntity room = findRoomById(roomId);
+        if (room != null) {
+            room.setConsultationActive(true);
+            room.setBlocked(false);
+            chatRoomRepository.save(room);
+        }
+    }
+
+    public Optional<ChatMessageEntity> findChatMessageById(Long messageId) {
+        return chatMessageRepository.findById(messageId);
+    }
+
+    // 파일 업로드
+    @Transactional
+    public ChatMessageEntity uploadFile(byte[] fileData, String fileName, String roomId) {
+        String uniqueFileName = UUID.randomUUID().toString() + "-" + fileName;
+        try {
+            s3Client.putObject(new PutObjectRequest(bucketName, uniqueFileName, new ByteArrayInputStream(fileData), null));
+            String fileUrl = s3Client.getUrl(bucketName, uniqueFileName).toString();
+
+            ChatMessageEntity chatMessage = ChatMessageEntity.builder()
+                    .fileUrl(fileUrl)
+                    .fileName(fileName)
+                    .roomId(roomId)
+                    .sender("System")
+                    .type(ChatMessageEntity.MessageType.FILE)
+                    .timestamp(LocalDateTime.now())
+                    .build();
+
+            return saveChatMessage(chatMessage);
+        } catch (Exception e) {
+            log.error("Error uploading file: {}", e.getMessage(), e);
+            throw new RuntimeException("File upload failed: " + e.getMessage());
+        }
+    }
 
 }
