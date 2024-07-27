@@ -1,8 +1,10 @@
 package com.viewmore.poksin.controller;
 
 import java.io.IOException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Map;
-
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import com.viewmore.poksin.entity.ChatMessageEntity;
@@ -15,6 +17,7 @@ import com.viewmore.poksin.code.SuccessCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +37,9 @@ public class ChatController {
 
     @Autowired
     private S3Uploader s3Uploader;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     public ChatController(ChatService chatService, UserService userService) {
         this.chatService = chatService;
@@ -58,24 +64,6 @@ public class ChatController {
                 .body(new ResponseDTO<>(SuccessCode.SUCCESS_CREATE_CHATROOM, newRoom));
     }
 
-    //파일 업로드
-    @PostMapping("/upload")
-    public ResponseEntity<ChatMessageEntity> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("roomId") String roomId) {
-        try {
-            // S3에 파일 업로드
-            String fileUrl = s3Uploader.upload(file, "chat-uploads"); // S3의 디렉토리 이름
-
-            // ChatMessageEntity를 생성하여 반환
-            ChatMessageEntity chatMessage = chatService.uploadFile(file.getBytes(), file.getOriginalFilename(), roomId); // byte[]를 전달
-            log.info("File uploaded successfully: {}", file.getOriginalFilename());
-
-            return ResponseEntity.ok(chatMessage);
-        } catch (IOException e) {
-            log.error("Error uploading file: {}", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
     // 모든 유저 조회
     @GetMapping("/users")
     public ResponseEntity<ResponseDTO<List<UserResponseDTO>>> findAllUsers() {
@@ -96,6 +84,11 @@ public class ChatController {
                 throw new IllegalArgumentException("This room is blocked.");
             }
             chatRoom.sendMessage(chatMessage, chatService);
+
+            chatMessage.setTimestamp(ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime());
+            chatService.saveChatMessage(chatMessage);
+
+            messagingTemplate.convertAndSend("/topic/" + chatMessage.getRoomId(), chatMessage);
         }
         return chatMessage;
     }
@@ -152,5 +145,23 @@ public class ChatController {
         }
         chatService.openRoom(roomId);
         return ResponseEntity.ok("상담이 재개되고, 채팅방이 활성화 상태가 되었습니다.");
+    }
+
+    //파일 업로드
+    @PostMapping("/upload")
+    public ResponseEntity<ChatMessageEntity> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("roomId") String roomId) {
+        try {
+            // S3에 파일 업로드
+            String fileUrl = s3Uploader.upload(file, "chat-uploads"); // S3의 디렉토리 이름
+
+            // ChatMessageEntity를 생성하여 반환
+            ChatMessageEntity chatMessage = chatService.uploadFile(file.getBytes(), file.getOriginalFilename(), roomId); // byte[]를 전달
+            log.info("File uploaded successfully: {}", file.getOriginalFilename());
+
+            return ResponseEntity.ok(chatMessage);
+        } catch (IOException e) {
+            log.error("Error uploading file: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

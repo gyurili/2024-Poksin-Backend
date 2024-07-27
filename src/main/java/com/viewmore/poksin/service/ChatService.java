@@ -76,22 +76,6 @@ public class ChatService {
         }
     }
 
-    @Transactional
-    public ChatMessageEntity sendChatMessage(ChatMessageEntity message) {
-        log.info("Sending chat message: {}", message);
-
-        message.setTimestamp(LocalDateTime.now());
-        ChatMessageEntity savedMessage = chatMessageRepository.save(message);
-
-        ChatRoomEntity chatRoom = chatRoomRepository.findByRoomId(message.getRoomId())
-                .orElseThrow(() -> new RuntimeException("Chat room not found"));
-        chatRoom.setLastMessage(message.getMessage());
-        chatRoom.setLastUpdated(LocalDateTime.now());
-        chatRoomRepository.save(chatRoom);
-
-        return savedMessage;
-    }
-
     public List<ChatMessageEntity> findMessagesByRoomId(String roomId) {
         log.info("Finding messages for roomId: {}", roomId);
         return chatMessageRepository.findByRoomId(roomId);
@@ -115,10 +99,6 @@ public class ChatService {
             room.setBlocked(false);
             chatRoomRepository.save(room);
         }
-    }
-
-    public Optional<ChatMessageEntity> findChatMessageById(Long messageId) {
-        return chatMessageRepository.findById(messageId);
     }
 
     // 파일 업로드
