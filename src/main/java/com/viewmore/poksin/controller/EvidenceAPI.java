@@ -21,7 +21,7 @@ import java.util.List;
 public interface EvidenceAPI {
     @Operation(summary = "[일반 유저] 증거 업로드")
     public ResponseEntity<ResponseDTO> createListFile(
-            @ModelAttribute CreateEvidenceDTO createEvidenceDTO,
+            @RequestPart("createEvidenceDTO")  CreateEvidenceDTO createEvidenceDTO,
             @RequestPart("fileUrls") List<MultipartFile> fileUrls
     ) throws IOException;
 
