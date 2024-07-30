@@ -62,7 +62,7 @@ public class SwaggerConfig {
                                         .addProperty("code", new Schema<String>().type("string"))
                                         .addProperty("message", new Schema<String>().type("string"))
                                         .addProperty("data", new Schema<Object>().type("object"))
-                                .example("{ \"status\": 200, \"code\": \"SUCCESS_LOGIN\", \"message\": \"로그인을 성공했습니다. 헤더 토큰을 확인하세요.\", \"data\": null }"))));
+                                        .example("{ \"status\": 200, \"code\": \"SUCCESS_LOGIN\", \"message\": \"로그인을 성공했습니다. 헤더 토큰을 확인하세요.\", \"data\": null }"))));
 
         ApiResponse unauthorizedResponse = new ApiResponse()
                 .description("인증 실패")
@@ -81,9 +81,9 @@ public class SwaggerConfig {
 
         PathItem pathItem = new PathItem()
                 .post(new io.swagger.v3.oas.models.Operation()
-                        .addTagsItem("유저")
-                        .summary("일반 사용자, 상담사 로그인")
-                        .description("로그인 진행")
+                        .addTagsItem("유저 API")
+                        .summary("[일반 유저, 상담사] 로그인")
+                        .description("username과 password를 입력하여 로그인을 진행합니다.")
                         .requestBody(requestBody)
                         .responses(apiResponses));
 
@@ -126,9 +126,9 @@ public class SwaggerConfig {
 
         PathItem pathItem = new PathItem()
                 .post(new io.swagger.v3.oas.models.Operation()
-                        .addTagsItem("유저")
-                        .summary("일반 사용자, 상담사 로그아웃")
-                        .description("로그아웃 진행")
+                        .addTagsItem("유저 API")
+                        .summary("[일반 유저, 상담사] 로그인")
+                        .description("refresh 토큰을 헤더에 추가하여 로그아웃을 진행합니다.")
                         .addParametersItem(refreshParameter)
                         .responses(apiResponses));
 

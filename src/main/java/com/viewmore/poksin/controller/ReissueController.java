@@ -24,7 +24,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/reissue")
 @RequiredArgsConstructor
-public class ReissueController {
+public class ReissueController implements ReissueAPI{
     private final JWTUtil jwtUtil;
     private final RefreshRedisRepository refreshRedisRepository;
 

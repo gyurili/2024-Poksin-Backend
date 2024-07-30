@@ -24,7 +24,7 @@ import java.util.List;
 @RequestMapping("/evidence")
 @RequiredArgsConstructor
 @Slf4j
-public class EvidenceController {
+public class EvidenceController implements EvidenceAPI{
     private final EvidenceService evidenceService;
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
