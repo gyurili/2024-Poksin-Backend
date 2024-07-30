@@ -3,6 +3,7 @@ package com.viewmore.poksin.config;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.oas.models.examples.Example;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.MediaType;
@@ -65,7 +66,7 @@ public class SwaggerConfig {
                                         .example("{ \"status\": 200, \"code\": \"SUCCESS_LOGIN\", \"message\": \"로그인을 성공했습니다. 헤더 토큰을 확인하세요.\", \"data\": null }"))));
 
         ApiResponse unauthorizedResponse = new ApiResponse()
-                .description("인증 실패")
+                .description("아이디 혹은 비밀번호를 잘못 입력했을 경우")
                 .content(new Content()
                         .addMediaType("application/json", new MediaType()
                                 .schema(new Schema<>()
@@ -107,10 +108,10 @@ public class SwaggerConfig {
                                         .addProperty("code", new Schema<String>().type("string"))
                                         .addProperty("message", new Schema<String>().type("string"))
                                         .addProperty("data", new Schema<String>().type("string").nullable(true)))
-                                .example("{ \"status\": 200, \"code\": \"SUCCESS_LOGOUT\", \"message\": \"로그아웃 성공\", \"data\": null }")));
+                                .example("{ \"status\": 200, \"code\": \"SUCCESS_LOGOUT\", \"message\": \"성공적으로 로그아웃했습니다.\", \"data\": null }")));
 
-        ApiResponse badRequestResponse = new ApiResponse()
-                .description("잘못된 요청")
+        ApiResponse invalidRequestResponse = new ApiResponse()
+                .description("인증 정보가 유효하지 않을 경우")
                 .content(new Content()
                         .addMediaType("application/json", new MediaType()
                                 .schema(new Schema<>()
@@ -118,16 +119,21 @@ public class SwaggerConfig {
                                         .addProperty("code", new Schema<String>().type("string"))
                                         .addProperty("message", new Schema<String>().type("string"))
                                         .addProperty("data", new Schema<String>().type("string").nullable(true)))
-                                .example("{ \"status\": 400, \"code\": \"BAD_REQUEST\", \"message\": \"잘못된 요청입니다\", \"data\": null }")));
+                                .addExamples("TOKEN_EXPIRED", new Example()
+                                        .value("{ \"status\": 401, \"code\": \"TOKEN_EXPIRED\", \"message\": \"토큰이 만료되었습니다.\", \"data\": null }"))
+                                .addExamples("TOKEN_MISSING", new Example()
+                                        .value("{ \"status\": 401, \"code\": \"TOKEN_MISSING\", \"message\": \"요청 헤더에 토큰이 없습니다.\", \"data\": null }"))
+                                .addExamples("INVALID_REFRESH_TOKEN", new Example()
+                                        .value("{ \"status\": 401, \"code\": \"INVALID_REFRESH_TOKEN\", \"message\": \"유효하지 않은 리프레시 토큰입니다.\", \"data\": null }"))));
 
         ApiResponses apiResponses = new ApiResponses();
         apiResponses.addApiResponse("200", successResponse);
-        apiResponses.addApiResponse("400", badRequestResponse);
+        apiResponses.addApiResponse("401", invalidRequestResponse);
 
         PathItem pathItem = new PathItem()
                 .post(new io.swagger.v3.oas.models.Operation()
                         .addTagsItem("유저 API")
-                        .summary("[일반 유저, 상담사] 로그인")
+                        .summary("[일반 유저, 상담사] 로그아웃")
                         .description("refresh 토큰을 헤더에 추가하여 로그아웃을 진행합니다.")
                         .addParametersItem(refreshParameter)
                         .responses(apiResponses));
